@@ -8,11 +8,11 @@ const projects = [
   {
     id: 'edulab-synthesis-engine',
     title: 'eduLAB Synthesis Engine',
-    description: 'A high-performance audio synthesis engine running on Teensy 4.1, featuring real-time DSP, I2S audio output, and mixed-signal design.',
-    image: '/img/projects/synthesis-engine-placeholder.png',
+    description: 'A hybrid audio workstation combining digital synthesis with analog signal processing and real-time visualization.',
+    image: '/img/projects/edulab-synthesis-engine.png',
     techTags: ['Teensy 4.1', 'I2S Audio', 'DSP', 'Mixed-Signal', 'C++'],
-    status: 'in-progress',
-    link: '/blog/tags/edulab-synthesis-engine',
+    status: 'documentation',
+    link: '/projects/edulab-synthesis-engine/intro',
   },
   {
     id: 'future-project-1',

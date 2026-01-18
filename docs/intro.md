@@ -1,47 +1,35 @@
 ---
 sidebar_position: 1
+slug: /edulab-synthesis-engine/intro
 ---
 
-# Tutorial Intro
+# eduLAB Synthesis Engine: Overview
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Welcome to the technical documentation of the **eduLAB Synthesis Engine**. 
+This project is a deep dive into embedded systems, digital signal processing (DSP), and mixed-signal hardware design.
 
-## Getting Started
+## The Goal
+To build a high-performance, playable polyphonic synthesizer from scratch, moving away from high-level libraries to understand the underlying physics and mathematics of sound synthesis.
 
-Get started by **creating a new site**.
+## System Specifications (v3.8)
+Current stable build features:
+- **Processor:** ESP32-S3 / Teensy 4.1
+- **Synthesis:** Dual Oscillator (Sine, Square, Saw, Triangle)
+- **Audio Output:** Mixed-signal stage with custom RC filtering and Op-Amp buffering
+- **Interface:** I2C OLED Display + Rotary Encoder for parameter control
+- **Safety:** Integrated protection against inductive kickback (flyback diodes) and voltage spikes
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## Architecture Snapshot
+The system is divided into three main layers:
+1. **The Digital Core:** Waveform generation and envelope control (ADSR).
+2. **The Communications Layer:** I2C for UI and (upcoming) I2S for high-fidelity audio data.
+3. **The Analog Stage:** Low-pass filtering to remove high-frequency noise and impedance matching for headphones.
 
-### What you'll need
+## Development Status
+- [x] **v1.0 - v3.0:** Breadboard prototyping, PWM audio, basic oscillators.
+- [x] **v3.8:** Stable mixed-signal output, protection circuitry, optimized C++ code.
+- [ ] **v4.0 (In Progress):** Transition to I2S (PCM5102 DAC), Teensy 4.1 integration, and polyphonic voice management.
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+---
 
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+*Explore the sidebar to dive into specific Hardware Design, Software Architecture, and Lab Results.*

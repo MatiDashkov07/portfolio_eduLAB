@@ -23,7 +23,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--primary button--lg"
-            to="/projects">
+            to="/projects/edulab-synthesis-engine/intro">
             View Projects
           </Link>
           <Link
@@ -65,7 +65,7 @@ function FeaturedProject() {
             </div>
             <Link
               className="button button--outline button--primary"
-              to="/projects">
+              to="/projects/edulab-synthesis-engine/intro">
               Learn More →
             </Link>
           </div>

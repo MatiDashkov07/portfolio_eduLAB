@@ -47,6 +47,7 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
+          routeBasePath: 'projects', // Makes docs available at /projects instead of /docs
           // Optional: Remove edit links if not using GitHub
           // editUrl: 'https://github.com/your-username/portfolio-edu-lab/tree/main/',
         },
