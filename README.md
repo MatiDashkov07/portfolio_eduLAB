@@ -1,41 +1,35 @@
-# Website
+---
+sidebar_position: 1
+slug: /edulab-synthesis-engine/intro
+---
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+# eduLAB Synthesis Engine: Overview
 
-## Installation
+Welcome to the technical documentation of the **eduLAB Synthesis Engine**. 
+This project is a deep dive into embedded systems, digital signal processing (DSP), and mixed-signal hardware design.
 
-```bash
-yarn
-```
+## The Goal
+To build a high-performance, playable polyphonic synthesizer from scratch, moving away from high-level libraries to understand the underlying physics and mathematics of sound synthesis.
 
-## Local Development
+## System Specifications (v3.8)
+Current stable build features:
+- **Processor:** ESP32-S3 / Teensy 4.1
+- **Synthesis:** Dual Oscillator (Sine, Square, Saw, Triangle)
+- **Audio Output:** Mixed-signal stage with custom RC filtering and Op-Amp buffering
+- **Interface:** I2C OLED Display + Rotary Encoder for parameter control
+- **Safety:** Integrated protection against inductive kickback (flyback diodes) and voltage spikes
 
-```bash
-yarn start
-```
+## Architecture Snapshot
+The system is divided into three main layers:
+1. **The Digital Core:** Waveform generation and envelope control (ADSR).
+2. **The Communications Layer:** I2C for UI and (upcoming) I2S for high-fidelity audio data.
+3. **The Analog Stage:** Low-pass filtering to remove high-frequency noise and impedance matching for headphones.
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+## Development Status
+- [x] **v1.0 - v3.0:** Breadboard prototyping, PWM audio, basic oscillators.
+- [x] **v3.8:** Stable mixed-signal output, protection circuitry, optimized C++ code.
+- [ ] **v4.0 (In Progress):** Transition to I2S (PCM5102 DAC), Teensy 4.1 integration, and polyphonic voice management.
 
-## Build
+---
 
-```bash
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-Using SSH:
-
-```bash
-USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+*Explore the sidebar to dive into specific Hardware Design, Software Architecture, and Lab Results.*
