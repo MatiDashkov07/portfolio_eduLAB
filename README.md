@@ -1,8 +1,3 @@
----
-sidebar_position: 1
-slug: /edulab-synthesis-engine/intro
----
-
 # eduLAB Synthesis Engine: Overview
 
 Welcome to the technical documentation of the **eduLAB Synthesis Engine**. 
