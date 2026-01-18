@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkportfolio_edu_lab=globalThis.webpackChunkportfolio_edu_lab||[]).push([[1903],{1912(o){o.exports=JSON.parse('{"blogBasePath":"/portfolio_eduLAB/blog","blogTitle":"Engineering Blog","authorsListPath":"/portfolio_eduLAB/blog/authors"}')}}]);

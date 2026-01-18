@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkportfolio_edu_lab=globalThis.webpackChunkportfolio_edu_lab||[]).push([[9858],{5516(o){o.exports=JSON.parse('{"name":"docusaurus-plugin-content-blog","id":"default"}')}}]);
