@@ -4,27 +4,141 @@
  * work well for content-centric websites.
  */
 
-/* You can override the default Infima variables here. */
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Color Palette - "Soft Industrial Lab" */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #1E3A5F;          /* Deep navy - links, accents */
+  --ifm-color-primary-dark: #162d4a;
+  --ifm-color-primary-darker: #122640;
+  --ifm-color-primary-darkest: #0d1c30;
+  --ifm-color-primary-light: #2a4a74;
+  --ifm-color-primary-lighter: #315280;
+  --ifm-color-primary-lightest: #3d6299;
+  
+  --ifm-background-color: #FAFAFA;        /* Matte white */
+  --ifm-background-surface-color: #F0F0F0; /* Light warm gray */
+  --ifm-font-color-base: #1A1A1A;         /* Charcoal text */
+  
   --ifm-code-font-size: 95%;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', monospace;
+  --ifm-font-family-base: 'Inter', system-ui, sans-serif;
+  --ifm-line-height-base: 1.7;
+  
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* Dark mode */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-background-color: #1a1a1a;
+  --ifm-background-surface-color: #242424;
+  --ifm-font-color-base: #e0e0e0;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Typography improvements */
+body {
+  font-family: var(--ifm-font-family-base);
+  line-height: var(--ifm-line-height-base);
+}
+
+/* Code blocks */
+code {
+  font-family: var(--ifm-font-family-monospace);
+}
+
+/* Full width blog layout */
+.blog-wrapper .container {
+  max-width: 1400px !important;
+}
+
+main[class*="blogListPage"] .container,
+main[class*="blogPostPage"] .container {
+  max-width: 1400px !important;
+}
+
+article {
+  max-width: 900px;
+}
+
+.markdown {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Project cards styling */
+.project-card {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.project-card img {
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: auto;
+}
+
+.status-badge.completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+[data-theme='dark'] .status-badge.completed {
+  background-color: #1e4620;
+  color: #90ee90;
+}
+
+.status-badge.in-progress {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+[data-theme='dark'] .status-badge.in-progress {
+  background-color: #3d3419;
+  color: #ffd700;
+}
+
+.status-badge.documentation {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+[data-theme='dark'] .status-badge.documentation {
+  background-color: #1a3a40;
+  color: #5fb3d3;
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tech-tag {
+  padding: 0.25rem 0.5rem;
+  background-color: var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: var(--ifm-font-color-base);
 }

@@ -8,11 +8,39 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, var(--ifm-color-primary-lightest) 0%, var(--ifm-color-primary) 100%);
+  color: white;
+}
+
+.heroBanner h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.heroBanner .hero__subtitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  margin-bottom: 2rem;
 }
 
 @media screen and (max-width: 996px) {
   .heroBanner {
     padding: 2rem;
+  }
+  
+  .heroBanner h1 {
+    font-size: 2rem;
+  }
+  
+  .heroBanner .hero__subtitle {
+    font-size: 1.25rem;
   }
 }
 
@@ -20,4 +48,117 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.featuredProject {
+  padding: 4rem 0;
+  background-color: var(--ifm-background-surface-color);
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--ifm-color-primary);
+}
+
+.projectCard {
+  display: flex;
+  gap: 2rem;
+  background: var(--ifm-background-color);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.projectImage {
+  flex: 0 0 300px;
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 200px;
+  background-color: var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.9rem;
+}
+
+.projectContent {
+  flex: 1;
+}
+
+.projectContent h3 {
+  margin-bottom: 1rem;
+  color: var(--ifm-color-primary);
+}
+
+.techTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+@media screen and (max-width: 996px) {
+  .projectCard {
+    flex-direction: column;
+  }
+  
+  .projectImage {
+    flex: 1 1 auto;
+  }
+}
+
+.recentPosts {
+  padding: 4rem 0;
+}
+
+.postCard {
+  height: 100%;
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: var(--ifm-background-color);
+}
+
+.postCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.postLink {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+
+.postLink h3 {
+  margin-bottom: 0.75rem;
+  color: var(--ifm-color-primary);
+}
+
+.postLink p {
+  margin-bottom: 1rem;
+  color: var(--ifm-font-color-base);
+  opacity: 0.9;
+}
+
+.postMeta {
+  font-size: 0.875rem;
+  color: var(--ifm-color-emphasis-600);
+  margin-top: auto;
+}
+
+.viewAll {
+  text-align: center;
+  margin-top: 2rem;
 }
