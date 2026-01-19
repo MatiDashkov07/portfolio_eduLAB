@@ -1,89 +1,120 @@
 ---
 sidebar_position: 4
-title: Build Guide
+title: Replication Status
 ---
 
-# Build Guide (v3.8 Prototype)
+# Replication Status
 
-:::info Work in Progress
-This guide covers the assembly of the **v3.8 Development Build** on a breadboard. The final PCB v4.0 fabrication files (Gerbers) are currently in design validation.
-:::
+> **TL;DR:** v3.8 is not ready for replication. This page explains why and what to expect in future versions.
 
-## 1. Prerequisites
-Before attempting to replicate the eduLAB Synthesis Engine, ensure you have the following:
+---
 
-* **Skills:** Basic breadboarding, soldering (for pin headers), and C++ environment setup.
-* **Tools:**
-    * Soldering Iron (for prepping modules)
-    * Digital Multimeter
-    * Oscilloscope (Recommended for debugging the DAC filter)
-    * Breadboard & Jumper Wires
+## Current State: v3.8 (Not Recommended for Replication)
 
-## 2. Bill of Materials (BOM)
+The v3.8 hardware is a **learning prototype**, not a finished product. It was built to understand:
 
-### Core Components
-| Component | Value/Type | Quantity | Description |
-| :--- | :--- | :--- | :--- |
-| **MCU** | ESP32-S3 DevKitC | 1 | Main Processor (or Teensy 4.1 for v4) |
-| **Display** | SSD1306 OLED | 1 | 0.96" I2C Display (128x64) |
-| **Encoder** | EC11 Rotary | 2 | With Push-Button |
-| **Op-Amp** | LM358 / TL072 | 1 | Output Buffer Stage |
+- Transistor switching behavior
+- Inductive load protection
+- PWM audio limitations
+- Real-time embedded constraints
 
-### Passives & Connectors
-| Component | Value | Quantity | Description |
-| :--- | :--- | :--- | :--- |
-| **Resistors** | 10kΩ, 1kΩ, 220Ω | 10+ | Pull-ups, protection, LED limiting |
-| **Capacitors** | 100nF, 10µF | 4 | Decoupling and RC Filtering |
-| **Audio Jack** | 3.5mm TRS | 1 | Stereo Output Jack |
-| **Diode** | 1N5819 | 1 | **Critical:** Flyback Protection |
+### Why You Shouldn't Build v3.8:
 
-## 3. Assembly Overview
+- **Audio quality:** ~8-bit PWM (intentionally lo-fi)
+- **No proper output stage:** Direct transistor → speaker
+- **Breadboard-only:** No PCB design
+- **Missing features:** No DAC, no filters, no proper volume control
+- **Known issues:** Pitch quantization, encoder noise, power rail interference
 
+**If you build v3.8, you'll learn the same lessons I did — but you'll immediately want to upgrade to v4.0.**
 
+---
 
-The assembly is divided into three subsystems. It is recommended to build and test them in this order:
+## Next: v4.0 (Coming Soon)
 
-### Step A: Power & MCU
-1.  Mount the ESP32 on the breadboard.
-2.  Bridge the power rails (Red/Blue) to ensure stable 3.3V and 5V distribution.
-3.  **Critical:** Place a 10µF capacitor near the ESP32 power input to stabilize current spikes during WiFi operation.
+v4.0 will be the **first replicable version** with:
 
-### Step B: The Audio Filter (Analog Stage)
-This is the most sensitive part of the build.
-1.  Build the **RC Low-Pass Filter** close to the DAC output pin (GPIO 25/26).
-2.  Connect the filtered signal to the **Op-Amp Non-Inverting Input (+)**.
-3.  Configure the Op-Amp as a **Voltage Follower** (Connect Output pin directly to Inverting Input (-)).
-4.  Connect the Output to the 3.5mm Jack (Tip/Ring) via a 220Ω series resistor (Short-circuit protection).
+- ✅ I2S audio (PCM5102A DAC)
+- ✅ Op-amp output stage
+- ✅ Proper 3.5mm line output
+- ✅ Full OOP software architecture
+- ✅ Breadboard layout guide
+- ⏳ Optional: KiCad schematics (learning PCB design)
 
-### Step C: User Interface
-1.  Connect the OLED Display via I2C (SDA/SCL pins).
-2.  Connect Rotary Encoders. *Note: Use 10kΩ pull-up resistors if using the ESP32 internal pull-ups is insufficient for your noise environment.*
+**Timeline:** ~6 weeks (components already ordered)
 
-:::warning Protection First
-Before connecting any inductive load (like a raw speaker coil), ensure the **Flyback Diode** is installed anti-parallel to the load. Failing to do so may damage the GPIO.
-:::
+**Build Guide Status:** Will be published with v4.0 release
 
-## 4. Software Installation
+---
 
-The project uses **PlatformIO** (VS Code Extension) for dependency management.
+## What You Can Do Now
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone [https://github.com/MatiDashkov07/portfolio_eduLAB.git](https://github.com/MatiDashkov07/portfolio_eduLAB.git)
-    ```
-2.  **Open in PlatformIO:**
-    Open the `firmware` folder in VS Code.
-3.  **Install Libraries:**
-    PlatformIO will automatically download:
-    * `Adafruit_SSD1306`
-    * `Adafruit_GFX`
-    * `Encoder`
-4.  **Upload:**
-    Connect via USB-C and click the "Upload" arrow.
+### Option 1: Follow the Journey
 
-## 5. Verification
-How to know if it works?
+Read the blog posts to understand the **why** behind design decisions:
 
-1.  **Visual Check:** The OLED should display the eduLAB splash screen on boot.
-2.  **Voltage Check:** Measure the 3.3V rail. It should be stable.
-3.  **Audio Check:** Connect headphones. You should hear a clean sine wave when in "Test Mode". If you hear a buzz, check your ground connections.
+- [Inductive Kickback Analysis](/blog/inductive-kickback-analysis)
+- [Hardware Design Documentation](./hardware-design)
+- [Software Architecture](./software-architecture)
+
+### Option 2: Study the Code
+
+The v3.8 firmware is fully documented and available:
+
+- [Source Code](https://github.com/MatiDashkov07/portfolio_eduLAB/blob/main/src/main.cpp)
+- Single-file implementation (~450 lines)
+- Useful for learning embedded state machines
+
+### Option 3: Wait for v4.0
+
+Subscribe to updates (GitHub Watch or RSS feed) to be notified when the Build Guide is published.
+
+---
+
+## Bill of Materials (v3.8 Reference)
+
+Documented here for transparency only. **Do not purchase these for replication.**
+
+### Core Components (What Was Actually Used)
+
+| Component | Part | Quantity | Notes |
+|-----------|------|----------|-------|
+| MCU | ESP32-S3-N16R8 DevKitC | 1 | Main processor |
+| Display | SSD1306 OLED 0.91" | 1 | I2C interface |
+| Transistor | 2N2222 NPN | 1 | Audio driver |
+| Diode | 1N4007 | 1 | Flyback protection |
+| Speaker | 8Ω passive | 1 | Direct drive |
+| Potentiometers | RV09 10kΩ | 2 | Pitch/Duty control |
+| Encoder | HW-040 (EC11) | 1 | Menu navigation |
+| Resistors | 1kΩ | 1 | Base resistor |
+
+### What's NOT Here (Despite Being in Old BOM)
+
+- ❌ Op-amps (planned for v4.0)
+- ❌ DAC modules (planned for v4.0)
+- ❌ RC filters (planned for v4.0)
+- ❌ Audio jack (planned for v4.0)
+
+---
+
+## Related Documentation
+
+- [Hardware Design](./hardware-design) - What exists now
+- [Software Architecture](./software-architecture) - How it works
+- [Project Roadmap](/blog/welcome) - Where it's going
+
+---
+
+## FAQ
+
+**Q: Can I still build v3.8 even though it's not recommended?**  
+A: Technically yes, but you'll need to source parts yourself and debug breadboard issues. The schematic is available in the Hardware Design page.
+
+**Q: When will v4.0 be ready?**  
+A: Target: ~6 weeks from now. Components are ordered. Follow the blog for updates.
+
+**Q: Will there be PCB files?**  
+A: Maybe in v4.0 (learning KiCad), definitely by v5.0 (Teensy 4.1 version).
+
+**Q: Can I contribute?**  
+A: Not yet - this is a personal learning project. Once v4.0 is stable, I may accept suggestions.

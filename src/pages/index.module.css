@@ -117,47 +117,89 @@
   }
 }
 
+/* Recent Posts Section */
 .recentPosts {
   padding: 4rem 0;
+  background-color: var(--ifm-background-surface-color);
 }
 
+/* Post Card Container */
 .postCard {
   height: 100%;
   padding: 1.5rem;
   border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 8px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 4px;
   background: var(--ifm-background-color);
+  transition: border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .postCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--ifm-color-primary);
 }
 
+/* Post Link (entire card is clickable) */
 .postLink {
   color: inherit;
   text-decoration: none;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
+/* Post Title */
 .postLink h3 {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: var(--ifm-color-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
-.postLink p {
-  margin-bottom: 1rem;
-  color: var(--ifm-font-color-base);
-  opacity: 0.9;
-}
-
+/* Metadata (date + reading time) */
 .postMeta {
   font-size: 0.875rem;
   color: var(--ifm-color-emphasis-600);
+  margin-bottom: 0.75rem;
+}
+
+/* Excerpt */
+.postExcerpt {
+  flex: 1;
+  margin-bottom: 1rem;
+  color: var(--ifm-font-color-base);
+  opacity: 0.85;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  
+  /* Truncate to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tags Container */
+.postTags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
   margin-top: auto;
 }
 
+/* Individual Tag */
+.postTag {
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-700);
+  background-color: var(--ifm-color-emphasis-100);
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* View All Button Container */
 .viewAll {
   text-align: center;
   margin-top: 2rem;

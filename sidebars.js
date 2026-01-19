@@ -27,7 +27,6 @@ const sidebars = {
         'edulab-synthesis-engine/hardware-design',
         'edulab-synthesis-engine/software-architecture',
         'edulab-synthesis-engine/build-guide',
-        'edulab-synthesis-engine/results',
       ],
     },
     // Future projects will be added here

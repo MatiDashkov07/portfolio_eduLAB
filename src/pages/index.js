@@ -52,14 +52,13 @@ function FeaturedProject() {
           <div className={styles.projectContent}>
             <Heading as="h3">eduLAB Synthesis Engine</Heading>
             <p>
-              A high-performance audio synthesis engine running on Teensy 4.1, featuring 
-              real-time DSP, I2S audio output, and mixed-signal design. This project 
-              combines embedded C++ programming with hardware design to create a 
-              professional-grade synthesizer.
+            A work-in-progress embedded audio project documenting the path from low-level PWM experiments to a future DSP-based synthesis platform.
+
+Built to explore real-time constraints, hardware–software interaction, and audio signal generation — with an emphasis on learning, measurement, and transparency rather than finished features.
             </p>
             <div className={styles.techTags}>
-              <span className="tech-tag">Teensy 4.1</span>
-              <span className="tech-tag">I2S Audio</span>
+              <span className="tech-tag">Embedded Systems</span>
+              <span className="tech-tag">WIP</span>
               <span className="tech-tag">DSP</span>
               <span className="tech-tag">Mixed-Signal</span>
             </div>
@@ -77,12 +76,36 @@ function FeaturedProject() {
 
 function RecentPosts() {
   try {
+    // Access globalData and find the blog plugin data
     const globalData = useGlobalData();
-    const blogPluginData = globalData?.['docusaurus-plugin-content-blog']?.['default'];
-    const blogList = blogPluginData?.blogListPaginated?.items || [];
     
-    // Get the 3 most recent posts
-    const recentPosts = blogList.slice(0, 3);
+    // Debug: Log all available plugin keys
+    console.log('=== BLOG DEBUG ===');
+    console.log('All globalData keys:', Object.keys(globalData || {}));
+    
+    // Try both possible key formats
+    const blogPluginData = 
+      globalData?.['docusaurus-plugin-content-blog']?.['default'] ||
+      globalData?.['@docusaurus/plugin-content-blog']?.['default'];
+    
+    console.log('blogPluginData:', blogPluginData);
+    console.log('blogPluginData keys:', blogPluginData ? Object.keys(blogPluginData) : 'N/A');
+    
+    // Get blog posts - try both possible property names
+    const blogPosts = blogPluginData?.blogPosts || blogPluginData?.posts || [];
+    console.log('blogPosts length:', blogPosts.length);
+    console.log('First post:', blogPosts[0]);
+    console.log('==================');
+    
+    // Sort by date (newest first) and take top 3
+    const recentPosts = blogPosts
+      .filter(post => !post.metadata?.unlisted && !post.unlisted)
+      .sort((a, b) => {
+        const dateA = a.metadata?.date || a.date;
+        const dateB = b.metadata?.date || b.date;
+        return new Date(dateB) - new Date(dateA);
+      })
+      .slice(0, 3);
 
     if (recentPosts.length === 0) {
       return (
@@ -110,21 +133,49 @@ function RecentPosts() {
           <Heading as="h2" className={styles.sectionTitle}>Recent Posts</Heading>
           <div className="row">
             {recentPosts.map((post) => {
-              const metadata = post.content?.metadata || post.metadata;
-              if (!metadata) return null;
+              // Handle both data structures: post.metadata or direct properties
+              const metadata = post.metadata || post;
+              const permalink = metadata.permalink || post.permalink;
+              const title = metadata.title || post.title;
+              const date = metadata.formattedDate || metadata.date || post.date;
+              const readingTime = metadata.readingTime || post.readingTime;
+              const description = metadata.description || post.description;
+              const tags = metadata.tags || post.tags || [];
+              
+              if (!permalink) return null;
               
               return (
-                <div key={metadata.permalink} className="col col--4">
+                <div key={permalink} className="col col--4">
                   <article className={styles.postCard}>
-                    <Link to={metadata.permalink} className={styles.postLink}>
-                      <Heading as="h3">{metadata.title}</Heading>
-                      <p>{metadata.description || metadata.excerpt || 'Read more...'}</p>
+                    <Link to={permalink} className={styles.postLink}>
+                      {/* Title */}
+                      <Heading as="h3">{title}</Heading>
+                      
+                      {/* Metadata */}
                       <div className={styles.postMeta}>
-                        <time>{new Date(metadata.date).toLocaleDateString()}</time>
-                        {metadata.readingTime && (
-                          <span> · {Math.ceil(metadata.readingTime)} min read</span>
+                        <time>{typeof date === 'string' && date.includes('T') 
+                          ? new Date(date).toLocaleDateString() 
+                          : date}</time>
+                        {readingTime && (
+                          <span> · {Math.ceil(readingTime)} min read</span>
                         )}
                       </div>
+                      
+                      {/* Excerpt */}
+                      <p className={styles.postExcerpt}>
+                        {description || 'Read more...'}
+                      </p>
+                      
+                      {/* Tags */}
+                      {tags && tags.length > 0 && (
+                        <div className={styles.postTags}>
+                          {tags.slice(0, 3).map((tag, idx) => (
+                            <span key={idx} className={styles.postTag}>
+                              #{typeof tag === 'string' ? tag : tag.label}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </Link>
                   </article>
                 </div>
