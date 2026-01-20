@@ -101,7 +101,7 @@ Documented here for transparency only. **Do not purchase these for replication.*
 
 - [Hardware Design](./hardware-design) - What exists now
 - [Software Architecture](./software-architecture) - How it works
-- [Project Roadmap](/blog/welcome) - Where it's going
+- [Project Roadmap](/blog/welcome-to-edulab-blog) - Where it's going
 
 ---
 

@@ -212,7 +212,6 @@ The final form of eduLAB will be a complete DSP learning platform:
 - [Hardware Design](./hardware-design) — Schematics, circuit analysis, power supply design
 - [Software Architecture](./software-architecture) — Code structure, DSP algorithms, OOP refactor
 - [Build Guide](./build-guide) — Replicate v3.8, component selection
-- [Results & Measurements](./results) — Oscilloscope captures, performance data
 
 For debugging stories and design decisions, see the  
 [blog posts tagged edulab-synthesis-engine](/blog/tags/edulab-synthesis-engine).
