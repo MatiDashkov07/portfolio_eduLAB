@@ -36,6 +36,11 @@ const config = {
     },
   ],
 
+  // ADD THIS - Custom plugin to expose blog data
+  plugins: [
+    './plugins/recent-blog-posts',
+  ],
+
   presets: [
     [
       'classic',

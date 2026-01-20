@@ -52,9 +52,8 @@ function FeaturedProject() {
           <div className={styles.projectContent}>
             <Heading as="h3">eduLAB Synthesis Engine</Heading>
             <p>
-            A work-in-progress embedded audio project documenting the path from low-level PWM experiments to a future DSP-based synthesis platform.
-
-Built to explore real-time constraints, hardware–software interaction, and audio signal generation — with an emphasis on learning, measurement, and transparency rather than finished features.
+              A work-in-progress embedded audio project documenting the path from low-level PWM experiments to a future DSP-based synthesis platform.
+              Built to explore real-time constraints, hardware–software interaction, and audio signal generation — with an emphasis on learning, measurement, and transparency rather than finished features.
             </p>
             <div className={styles.techTags}>
               <span className="tech-tag">Embedded Systems</span>
@@ -75,133 +74,20 @@ Built to explore real-time constraints, hardware–software interaction, and aud
 }
 
 function RecentPosts() {
-  try {
-    // Access globalData and find the blog plugin data
-    const globalData = useGlobalData();
-    
-    // Debug: Log all available plugin keys
-    console.log('=== BLOG DEBUG ===');
-    console.log('All globalData keys:', Object.keys(globalData || {}));
-    
-    // Try both possible key formats
-    const blogPluginData = 
-      globalData?.['docusaurus-plugin-content-blog']?.['default'] ||
-      globalData?.['@docusaurus/plugin-content-blog']?.['default'];
-    
-    console.log('blogPluginData:', blogPluginData);
-    console.log('blogPluginData keys:', blogPluginData ? Object.keys(blogPluginData) : 'N/A');
-    
-    // Get blog posts - try both possible property names
-    const blogPosts = blogPluginData?.blogPosts || blogPluginData?.posts || [];
-    console.log('blogPosts length:', blogPosts.length);
-    console.log('First post:', blogPosts[0]);
-    console.log('==================');
-    
-    // Sort by date (newest first) and take top 3
-    const recentPosts = blogPosts
-      .filter(post => !post.metadata?.unlisted && !post.unlisted)
-      .sort((a, b) => {
-        const dateA = a.metadata?.date || a.date;
-        const dateB = b.metadata?.date || b.date;
-        return new Date(dateB) - new Date(dateA);
-      })
-      .slice(0, 3);
+  const globalData = useGlobalData();
+  const data = globalData?.['recent-blog-posts']?.['default'];
+  const recentPosts = data?.recentPosts || [];
 
-    if (recentPosts.length === 0) {
-      return (
-        <section className={styles.recentPosts}>
-          <div className="container">
-            <Heading as="h2" className={styles.sectionTitle}>Recent Posts</Heading>
-            <p style={{textAlign: 'center', color: 'var(--ifm-color-emphasis-600)'}}>
-              No blog posts yet. Check back soon!
-            </p>
-            <div className={styles.viewAll}>
-              <Link
-                className="button button--outline button--primary"
-                to="/blog">
-                View Blog →
-              </Link>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
+  if (recentPosts.length === 0) {
     return (
       <section className={styles.recentPosts}>
         <div className="container">
           <Heading as="h2" className={styles.sectionTitle}>Recent Posts</Heading>
-          <div className="row">
-            {recentPosts.map((post) => {
-              // Handle both data structures: post.metadata or direct properties
-              const metadata = post.metadata || post;
-              const permalink = metadata.permalink || post.permalink;
-              const title = metadata.title || post.title;
-              const date = metadata.formattedDate || metadata.date || post.date;
-              const readingTime = metadata.readingTime || post.readingTime;
-              const description = metadata.description || post.description;
-              const tags = metadata.tags || post.tags || [];
-              
-              if (!permalink) return null;
-              
-              return (
-                <div key={permalink} className="col col--4">
-                  <article className={styles.postCard}>
-                    <Link to={permalink} className={styles.postLink}>
-                      {/* Title */}
-                      <Heading as="h3">{title}</Heading>
-                      
-                      {/* Metadata */}
-                      <div className={styles.postMeta}>
-                        <time>{typeof date === 'string' && date.includes('T') 
-                          ? new Date(date).toLocaleDateString() 
-                          : date}</time>
-                        {readingTime && (
-                          <span> · {Math.ceil(readingTime)} min read</span>
-                        )}
-                      </div>
-                      
-                      {/* Excerpt */}
-                      <p className={styles.postExcerpt}>
-                        {description || 'Read more...'}
-                      </p>
-                      
-                      {/* Tags */}
-                      {tags && tags.length > 0 && (
-                        <div className={styles.postTags}>
-                          {tags.slice(0, 3).map((tag, idx) => (
-                            <span key={idx} className={styles.postTag}>
-                              #{typeof tag === 'string' ? tag : tag.label}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </Link>
-                  </article>
-                </div>
-              );
-            })}
-          </div>
+          <p style={{textAlign: 'center', color: 'var(--ifm-color-emphasis-600)'}}>
+            No blog posts yet. Check back soon!
+          </p>
           <div className={styles.viewAll}>
-            <Link
-              className="button button--outline button--primary"
-              to="/blog">
-              View All Posts →
-            </Link>
-          </div>
-        </div>
-      </section>
-    );
-  } catch (error) {
-    // Fallback if blog data is not available
-    return (
-      <section className={styles.recentPosts}>
-        <div className="container">
-          <Heading as="h2" className={styles.sectionTitle}>Recent Posts</Heading>
-          <div className={styles.viewAll}>
-            <Link
-              className="button button--outline button--primary"
-              to="/blog">
+            <Link className="button button--outline button--primary" to="/blog">
               View Blog →
             </Link>
           </div>
@@ -209,7 +95,56 @@ function RecentPosts() {
       </section>
     );
   }
+
+  return (
+    <section className={styles.recentPosts}>
+      <div className="container">
+        <Heading as="h2" className={styles.sectionTitle}>Recent Posts</Heading>
+        <div className="row">
+          {recentPosts.map((post) => (
+            <div key={post.permalink} className="col col--4">
+              <article className={styles.postCard}>
+                <Link to={post.permalink} className={styles.postLink}>
+                  <Heading as="h3">{post.title}</Heading>
+                  <div className={styles.postMeta}>
+                    <time>
+                      {new Date(post.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </time>
+                    {post.readingTime && (
+                      <span> · {post.readingTime} min read</span>
+                    )}
+                  </div>
+                  <p className={styles.postExcerpt}>
+                    {post.description || 'Read more...'}
+                  </p>
+                  {post.tags && post.tags.length > 0 && (
+                    <div className={styles.postTags}>
+                      {post.tags.slice(0, 3).map((tag, idx) => (
+                        <span key={idx} className={styles.postTag}>
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </Link>
+              </article>
+            </div>
+          ))}
+        </div>
+        <div className={styles.viewAll}>
+          <Link className="button button--outline button--primary" to="/blog">
+            View All Posts →
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
 }
+
 
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
