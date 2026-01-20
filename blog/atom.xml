@@ -6,7 +6,7 @@
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://MatiDashkov07.github.io/portfolio_eduLAB/blog"/>
     <subtitle>eduLAB Engineering Blog Blog</subtitle>
-    <icon>https://MatiDashkov07.github.io/portfolio_eduLAB/img/edulab-logo-light.svg</icon>
+    <icon>https://MatiDashkov07.github.io/portfolio_eduLAB/img/edulab-icon-light.svg</icon>
     <entry>
         <title type="html"><![CDATA[Saved by Physics: Analyzing Inductive Kickback & Back EMF]]></title>
         <id>https://MatiDashkov07.github.io/portfolio_eduLAB/blog/inductive-kickback-analysis</id>
