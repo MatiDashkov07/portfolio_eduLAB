@@ -142,3 +142,86 @@ article {
   font-size: 0.875rem;
   color: var(--ifm-font-color-base);
 }
+
+/* Navbar GitHub Icon */
+.header-github-link {
+  width: 24px;
+  height: 24px;
+  background-color: var(--ifm-navbar-link-color);
+  mask: url('../icons/github.svg') no-repeat center;
+  mask-size: contain;
+  transition: background-color var(--ifm-transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.header-github-link:hover {
+  background-color: var(--ifm-navbar-link-hover-color);
+}
+
+/* Footer Social Links - Icons Only */
+.footer-github-link,
+.footer-linkedin-link,
+.footer-email-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 0 0.75rem;
+  background-color: transparent;
+  font-size: 0;
+  color: transparent;
+  text-decoration: none;
+}
+
+.footer-github-link::before,
+.footer-linkedin-link::before,
+.footer-email-link::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #bbbbbb;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.footer-github-link::before {
+  mask: url('../icons/github.svg') no-repeat center / contain;
+  -webkit-mask: url('../icons/github.svg') no-repeat center / contain;
+}
+
+.footer-linkedin-link::before {
+  mask: url('../icons/linkedin.svg') no-repeat center / contain;
+  -webkit-mask: url('../icons/linkedin.svg') no-repeat center / contain;
+}
+
+.footer-email-link::before {
+  mask: url('../icons/email.svg') no-repeat center / contain;
+  -webkit-mask: url('../icons/email.svg') no-repeat center / contain;
+}
+
+.footer-github-link:hover::before,
+.footer-linkedin-link:hover::before,
+.footer-email-link:hover::before {
+  background-color: #ffffff;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .footer-github-link::before,
+[data-theme='dark'] .footer-linkedin-link::before,
+[data-theme='dark'] .footer-email-link::before {
+  background-color: #cccccc;
+}
+
+[data-theme='dark'] .footer-github-link:hover::before,
+[data-theme='dark'] .footer-linkedin-link:hover::before,
+[data-theme='dark'] .footer-email-link:hover::before {
+  background-color: #ffffff;
+}
+
+[data-theme='dark'] .header-github-link {
+  background-color: var(--ifm-navbar-link-color);
+}

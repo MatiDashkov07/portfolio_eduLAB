@@ -5,15 +5,16 @@ import rehypeKatex from 'rehype-katex';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'eduLAB Engineering Blog',
+  title: 'eduLAB',
   tagline: 'Documenting the journey from breadboard to professional hardware design',
-  favicon: 'img/favicon.ico',
+  // וודא שזה השם הנכון של הקובץ שקיים ב-static/img
+  favicon: 'img/edulab-icon-light.svg',
 
   future: {
     v4: true,
   },
 
-  // GitHub Pages config - FIXED!
+  // GitHub Pages config
   url: 'https://MatiDashkov07.github.io',
   baseUrl: '/portfolio_eduLAB/',
   organizationName: 'MatiDashkov07',
@@ -36,7 +37,7 @@ const config = {
     },
   ],
 
-  // ADD THIS - Custom plugin to expose blog data
+  // Custom plugin to expose blog data
   plugins: [
     './plugins/recent-blog-posts',
   ],
@@ -87,16 +88,23 @@ const config = {
         title: 'eduLAB',
         logo: {
           alt: 'eduLAB Logo',
-          src: 'img/logo.svg',
+          // הלוגו למצב יום
+          src: 'img/edulab-icon-light.svg',
+          // הלוגו למצב לילה
+          srcDark: 'img/edulab-icon-dark.svg',
         },
         items: [
           {to: '/projects', label: 'Projects', position: 'left'},
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
+          
+          // --- GitHub Icon Only ---
           {
             href: 'https://github.com/MatiDashkov07',
-            label: 'GitHub',
             position: 'right',
+            // הקלאס הזה יציג רק את האייקון (מוגדר ב-custom.css)
+            className: 'header-github-link',
+            'aria-label': 'GitHub repository',
           },
         ],
       },
@@ -104,19 +112,23 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Links',
+            title: 'Social',
             items: [
+              // --- Footer Links with Icons & Text ---
               {
                 label: 'GitHub',
                 href: 'https://github.com/MatiDashkov07',
+                className: 'footer-github-link',
               },
               {
                 label: 'LinkedIn',
                 href: 'https://www.linkedin.com/in/mati-dashkov-33740b375',
+                className: 'footer-linkedin-link',
               },
               {
                 label: 'Email',
                 href: 'mailto:matidashkov5@gmail.com',
+                className: 'footer-email-link',
               },
             ],
           },

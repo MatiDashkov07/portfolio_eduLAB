@@ -15,7 +15,7 @@ function HomepageHeader() {
           Mati Dashkov
         </Heading>
         <p className="hero__subtitle">
-          Aspiring Embedded Systems Engineer | Building in Public
+          Aspiring Hardware Engineer | Building in Public
         </p>
         <p className={styles.tagline}>
           Documenting the journey from breadboard to professional hardware design
@@ -44,11 +44,13 @@ function FeaturedProject() {
       <div className="container">
         <Heading as="h2" className={styles.sectionTitle}>Featured Project</Heading>
         <div className={styles.projectCard}>
-          <div className={styles.projectImage}>
-            <div className={styles.placeholderImage}>
-              <span>PCB/Schematic Image</span>
+            <div className={styles.projectImage}>
+              <img
+                src="/img/eduLAB-photo-showcase.jpg"
+                alt="eduLAB Synthesis Engine - Hardware Prototype"
+                className={styles.projectImageActual}
+              />
             </div>
-          </div>
           <div className={styles.projectContent}>
             <Heading as="h3">eduLAB Synthesis Engine</Heading>
             <p>
@@ -150,7 +152,6 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title="Home"
       description="eduLAB Engineering Blog - Documenting the journey from breadboard to professional hardware design">
       <HomepageHeader />
       <main>
