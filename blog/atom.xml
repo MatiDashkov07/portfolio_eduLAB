@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="atom.xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://MatiDashkov07.github.io/portfolio_eduLAB/blog</id>
-    <title>eduLAB Engineering Blog Blog</title>
+    <title>eduLAB Blog</title>
     <updated>2026-01-18T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://MatiDashkov07.github.io/portfolio_eduLAB/blog"/>
-    <subtitle>eduLAB Engineering Blog Blog</subtitle>
+    <subtitle>eduLAB Blog</subtitle>
     <icon>https://MatiDashkov07.github.io/portfolio_eduLAB/img/edulab-icon-light.svg</icon>
     <entry>
         <title type="html"><![CDATA[Saved by Physics: Analyzing Inductive Kickback & Back EMF]]></title>
