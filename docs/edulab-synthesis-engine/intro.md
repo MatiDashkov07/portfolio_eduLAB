@@ -94,6 +94,7 @@ DIGITAL SYNTHESIS → ANALOG OUTPUT → USER-BUILT CIRCUITS → MEASUREMENT & AN
 Digital signals are generated in firmware, converted to analog form, physically modified using breadboard circuits, and then measured again.  
 That closed loop is the core of the project.
 
+![eduLAB Signal Flow](/img/projects/flowchart-intro-docs-file.svg)
 <!-- [PLACEHOLDER: Signal Flow Diagram from SOT — ASCII art or generated diagram] -->
 
 ---
@@ -133,8 +134,6 @@ PWM audio exposes:
 - Why proper DACs exist  
 
 <!-- [PLACEHOLDER: v3.8 breadboard photo — real hardware build] -->
-
-<!-- [PLACEHOLDER: Embedded schematic with zoom capability — link to PDF version] -->
 
 ### Software Architecture
 
