@@ -46,7 +46,7 @@ function FeaturedProject() {
         <div className={styles.projectCard}>
             <div className={styles.projectImage}>
               <img
-                src="/img/eduLAB-photo-showcase.jpg"
+                src={require('@site/static/img/eduLAB-photo-showcase.jpg').default}
                 alt="eduLAB Synthesis Engine - Hardware Prototype"
                 className={styles.projectImageActual}
               />

@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import styles from './projects.module.css';
@@ -9,7 +10,7 @@ const projects = [
     id: 'edulab-synthesis-engine',
     title: 'eduLAB Synthesis Engine',
     description: 'A hybrid audio workstation combining digital synthesis with analog signal processing and real-time visualization.',
-    image: '/img/projects/edulab-synthesis-engine.png',
+    image: '/img/projects/eduLAB-projects-image.jpg',
     techTags: ['Teensy 4.1', 'I2S Audio', 'DSP', 'Mixed-Signal', 'C++'],
     status: 'documentation',
     link: '/projects/edulab-synthesis-engine/intro',
@@ -18,7 +19,7 @@ const projects = [
     id: 'future-project-1',
     title: 'Future Project',
     description: 'More projects coming soon as I continue building and learning.',
-    image: '/img/projects/placeholder.png',
+    //image: '/img/projects/placeholder.png',
     techTags: ['Coming Soon'],
     status: 'documentation',
     link: '#',
@@ -41,9 +42,17 @@ function ProjectCard({project}) {
   return (
     <div className={styles.projectCard}>
       <div className={styles.projectImage}>
-        <div className={styles.placeholderImage}>
-          <span>{project.title}</span>
-        </div>
+      {project.image ? (
+          <img
+            src={useBaseUrl(project.image)}
+            alt={project.title}
+            className={styles.cardImg}
+          />
+        ) : (
+          <div className={styles.placeholderImage}>
+            <span>{project.title}</span>
+          </div>
+        )}
       </div>
       <div className={styles.projectContent}>
         <Heading as="h3">{project.title}</Heading>
