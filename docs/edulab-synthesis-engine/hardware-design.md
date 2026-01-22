@@ -3,6 +3,9 @@ sidebar_position: 2
 title: Hardware Design
 ---
 
+import PDFViewer from '@site/src/components/PDFViewer';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 # Hardware Design — v3.8
 
 > Technical documentation of the current hardware implementation.
@@ -47,7 +50,7 @@ Pots (ADC) + Encoder (Interrupt) + OLED (I2C)
 **Audio:** PWM output → transistor driver → speaker (direct, no filter)  
 **UI:** OLED display + rotary encoder + 2× potentiometers
 
-<!-- [PLACEHOLDER: Simple block diagram — v3.8 signal flow only] -->
+![eduLAB v3.8 — Hardware System Overview](/img/projects/system-overview-flowchart-3.8v.svg)
 
 ---
 
@@ -55,7 +58,9 @@ Pots (ADC) + Encoder (Interrupt) + OLED (I2C)
 
 Below is the full schematic for v3.8.
 
-<!-- [PLACEHOLDER: Embedded PDF schematic with zoom capability] -->
+<div style={{ marginBottom: '2rem' }}>
+  <PDFViewer fileUrl="/files/schematic-v3.8.pdf" />
+</div>
 
 Let's break down each section.
 
@@ -162,6 +167,9 @@ This limitation is **intentional**.
 
 ### 8.2 Transistor Driver
 
+![Transistor driver stage on breadboard — 2N2222 with base resistor](/img/projects/breadboard-schematic-final-v3.8.png)
+
+
 **Part:** 2N2222A NPN transistor  
 **Configuration:** Common-emitter switch  
 **Base resistor:** 1 kΩ
@@ -218,7 +226,8 @@ This exceeds safe GPIO limits and could damage the MCU.
 - Stored energy dissipates safely
 - Voltage is clamped to approximately −0.7 V
 
-<!-- [PLACEHOLDER: Oscilloscope screenshot before/after flyback diode] -->
+![Inductive kickback clamped with flyback diode — oscilloscope measurement](/img/projects/kickback-scope-trace.jpg)
+*Measured collector voltage during PWM switching with flyback diode installed.*
 
 **Read more:**  
 [Saved by Physics: Analyzing Inductive Kickback](/blog/inductive-kickback-analysis)
@@ -245,6 +254,9 @@ This will be replaced by a proper op-amp attenuator in v4.0.
 ## 9. User Interface Hardware
 
 ---
+
+![eduLAB v3.8 user interface — OLED, rotary encoder, and potentiometers](/img/projects/UI-v3.8-showcase.jpg)
+
 
 ### 9.1 Display
 

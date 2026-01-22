@@ -2,6 +2,7 @@
 sidebar_position: 1
 title: "eduLAB Synthesis Engine"
 description: "A hands-on DSP education sandbox built from first principles to explore digital synthesis, analog circuits, and real-world signal behavior"
+slug: /edulab-synthesis-engine/intro
 ---
 
 # eduLAB Synthesis Engine
@@ -17,7 +18,10 @@ Its purpose is to take abstract DSP concepts and force them to survive contact w
 
 Instead of treating signals as numbers on a screen, eduLAB treats them as voltages you can probe, distort, filter, and analyze. Every part of the signal chain — from waveform generation to analog output — is intentionally exposed.
 
-<!-- [PLACEHOLDER: Hero image — v3.8 breadboard photo or concept mockup with clear label] -->
+![eduLAB v3.8 breadboard prototype — ESP32 driving a speaker via transistor stage](/img/projects/edulab-v3.8-overview.jpg)
+
+*Current eduLAB v3.8 setup — a working breadboard prototype focused on transistor switching, PWM audio, and real measurements.*
+
 
 ---
 
@@ -87,9 +91,6 @@ It is a **DSP Education Sandbox** designed to demonstrate:
 - Real-time signal analysis  
 
 ### Signal Flow Architecture
-```
-DIGITAL SYNTHESIS → ANALOG OUTPUT → USER-BUILT CIRCUITS → MEASUREMENT & ANALYSIS
-```
 
 Digital signals are generated in firmware, converted to analog form, physically modified using breadboard circuits, and then measured again.  
 That closed loop is the core of the project.
@@ -133,6 +134,7 @@ PWM audio exposes:
 - Filtering requirements  
 - Why proper DACs exist  
 
+![eduLAB v3.8 output stage — transistor, flyback diode, and speaker](/img/projects/v3.8-breadboard.jpg)
 <!-- [PLACEHOLDER: v3.8 breadboard photo — real hardware build] -->
 
 ### Software Architecture
@@ -156,7 +158,9 @@ Problems solved through measurement and reasoning:
 
 Detailed write-ups are available on the blog.
 
-<!-- [PLACEHOLDER: Oscilloscope screenshot — inductive kickback spike measurement] -->
+![Oscilloscope capture showing inductive kickback before flyback clamping](/img/projects/kickback-scope-trace.jpg)
+
+*Current eduLAB v3.8 setup — a working breadboard prototype focused on transistor switching, PWM audio, and real measurements.*
 
 ---
 
@@ -191,8 +195,10 @@ The final form of eduLAB will be a complete DSP learning platform:
 | Analog Section | Breadboards with ±12 V rails |
 | Measurement | Built-in signal analysis |
 
-<!-- [PLACEHOLDER: Concept mockup render with clear label] -->
-<!-- Label text: "Concept Visualization — Target vision for final product. Current version (v3.8) is a working breadboard prototype." -->
+![eduLAB concept visualization — future DSP education workstation](/img/projects/AI-mockup-eduLAB-final-vision.png)
+
+*Concept visualization — target long-term vision. Current version (v3.8) is a working breadboard prototype focused on fundamentals.*
+
 
 ---
 

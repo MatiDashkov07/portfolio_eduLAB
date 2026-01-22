@@ -40,6 +40,24 @@ const config = {
   // Custom plugin to expose blog data
   plugins: [
     './plugins/recent-blog-posts',
+    // --- הוסף את החלק הזה ---
+    function (context, options) {
+      return {
+        name: 'custom-docusaurus-plugin',
+        configureWebpack(config, isServer) {
+          return {
+            resolve: {
+              fallback: {
+                canvas: false, // זה הפתרון! מתעלם מהשגיאה
+                fs: false,
+                path: false,
+              },
+            },
+          };
+        },
+      };
+    },
+    // --- עד כאן ---
   ],
 
   presets: [
