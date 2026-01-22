@@ -59,7 +59,15 @@ Pots (ADC) + Encoder (Interrupt) + OLED (I2C)
 Below is the full schematic for v3.8.
 
 <div style={{ marginBottom: '2rem' }}>
-  <PDFViewer fileUrl="/files/schematic-v3.8.pdf" />
+  {/* הנגן */}
+  <PDFViewer fileUrl={useBaseUrl('/files/schematic-v3.8.pdf')} />
+
+  {/* טקסט קטן וממורכז להורדה */}
+  <div style={{ textAlign: 'left', marginTop: '0.5rem', fontSize: '1rem' }}>
+    <a href={useBaseUrl('/files/schematic-v3.8.pdf')} download="schematic-v3.8.pdf">
+      Click here to download the full PDF
+    </a>
+  </div>
 </div>
 
 Let's break down each section.
