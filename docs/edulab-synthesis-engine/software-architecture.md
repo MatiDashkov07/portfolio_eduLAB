@@ -56,29 +56,7 @@ Professional refactoring begins in v4.0.
 ---
 
 ## 3. System Overview
-```
-┌──────────────────────────────────────────────────────────┐
-│   MAIN LOOP (~7.6 kHz, measured under typical load)     │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  ┌────────────┐   ┌──────────────┐                      │
-│  │   INPUT    │   │  UI STATE    │                      │
-│  │ PROCESSING │──▶│   MACHINE    │                      │
-│  └────────────┘   └──────┬───────┘                      │
-│       ▲                   │                              │
-│       │                   ▼                              │
-│  ┌────┴──────┐   ┌──────────────┐                       │
-│  │    ISR    │   │    AUDIO     │                       │
-│  │ (Encoder) │   │    ENGINE    │                       │
-│  └───────────┘   └──────┬───────┘                       │
-│                          │                               │
-│                          ▼                               │
-│                  ┌──────────────┐                        │
-│                  │   DISPLAY    │                        │
-│                  │   RENDERER   │                        │
-│                  └──────────────┘                        │
-└──────────────────────────────────────────────────────────┘
-```
+![Software System Overview — v3.8](/img/projects/software-flowchart-v3.8.svg)
 
 **Execution model:** Single-threaded with interrupt service routine (ISR)
 
@@ -464,7 +442,7 @@ The next iteration focuses on **modularity and proper audio**, not features.
 ## 17. Related Documentation
 
 - [Hardware Design](./hardware-design)
-- [Build Guide](./build-guide)
+- [Replication Status](./replication-status)
 - [Full Source Code](https://github.com/MatiDashkov07/portfolio_eduLAB/blob/main/src/main.cpp)
 
 ---
