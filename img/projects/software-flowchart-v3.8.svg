@@ -1,0 +1,121 @@
+<svg width="1300" height="650" viewBox="0 0 1300 650" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- faint background grid -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#000000" stroke-width="1" opacity="0.05"/>
+    </pattern>
+
+    <!-- subtle block shadow -->
+    <filter id="shadow" x="-12%" y="-12%" width="140%" height="140%">
+      <feFlood flood-opacity="0.08" flood-color="#000000" result="flood"/>
+      <feComposite operator="in" in="flood" in2="SourceGraphic" result="mask"/>
+      <feOffset dx="2" dy="2" result="offset"/>
+      <feGaussianBlur stdDeviation="3" in="offset" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- arrow marker -->
+    <marker id="arrow-main" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L0,14 L12,7 z" fill="#111111"/>
+    </marker>
+  </defs>
+
+  <!-- background -->
+  <rect width="1300" height="650" fill="#FFFFFF"/>
+  <rect width="1300" height="650" fill="url(#grid)"/>
+
+  <!-- header -->
+  <text x="70" y="48"
+        font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+        font-weight="800" font-size="26" fill="#111111">
+    eduLAB — Software Overview (v3.8)
+  </text>
+  <text x="70" y="78"
+        font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+        font-weight="500" font-size="18" fill="#444444">
+    Single-threaded loop + encoder ISR (intentionally monolithic)
+  </text>
+
+  <!-- main loop note -->
+  <text x="650" y="128" text-anchor="middle"
+        font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+        font-weight="800" font-size="22" fill="#111827">
+    MAIN LOOP (continuous, non-blocking)
+  </text>
+
+  <!-- blocks -->
+  <g font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">
+
+    <!-- INPUT -->
+    <g filter="url(#shadow)">
+      <rect x="150" y="175" width="300" height="96" rx="14" fill="#FAFAFA" stroke="#222222" stroke-width="2.5"/>
+      <text x="300" y="208" font-weight="800" font-size="22" fill="#111111">INPUT PROCESSING</text>
+      <text x="300" y="236" font-weight="500" font-size="17" fill="#444444">read ADC • EMA filter • update vars</text>
+    </g>
+
+    <!-- UI -->
+    <g filter="url(#shadow)">
+      <rect x="850" y="175" width="300" height="96" rx="14" fill="#FAFAFA" stroke="#222222" stroke-width="2.5"/>
+      <text x="1000" y="208" font-weight="800" font-size="22" fill="#111111">UI STATE MACHINE</text>
+      <text x="1000" y="236" font-weight="500" font-size="17" fill="#444444">MENU ↔ PLAYING • timeouts</text>
+    </g>
+
+    <!-- ISR -->
+    <g filter="url(#shadow)">
+      <rect x="150" y="365" width="300" height="96" rx="14" fill="#FAFAFA" stroke="#222222" stroke-width="2.5"/>
+      <text x="300" y="398" font-weight="800" font-size="22" fill="#111111">ISR (Encoder)</text>
+      <text x="300" y="426" font-weight="500" font-size="17" fill="#444444">updates virtualPosition</text>
+    </g>
+
+    <!-- AUDIO -->
+    <g filter="url(#shadow)">
+      <rect x="500" y="345" width="300" height="96" rx="14" fill="#FAFAFA" stroke="#222222" stroke-width="2.5"/>
+      <text x="650" y="378" font-weight="800" font-size="22" fill="#111111">AUDIO ENGINE</text>
+      <text x="650" y="406" font-weight="500" font-size="17" fill="#444444">LEDC freq + duty</text>
+    </g>
+
+    <!-- DISPLAY -->
+    <g filter="url(#shadow)">
+      <rect x="850" y="495" width="300" height="96" rx="14" fill="#FAFAFA" stroke="#222222" stroke-width="2.5"/>
+      <text x="1000" y="528" font-weight="800" font-size="22" fill="#111111">DISPLAY RENDERER</text>
+      <text x="1000" y="556" font-weight="500" font-size="17" fill="#444444">OLED draw @ 20 FPS (50ms throttle)</text>
+    </g>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#111111" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- INPUT -> UI -->
+    <line x1="450" y1="223" x2="836" y2="223" marker-end="url(#arrow-main)"/>
+
+    <!-- ISR -> INPUT (up) -->
+    <line x1="300" y1="365" x2="300" y2="279" marker-end="url(#arrow-main)"/>
+
+    <!-- INPUT -> AUDIO (diagonal down-right) -->
+    <path d="M 450 250 L 490 345" marker-end="url(#arrow-main)"/>
+
+    <!-- UI -> DISPLAY (down) -->
+    <line x1="1000" y1="271" x2="1000" y2="491" marker-end="url(#arrow-main)"/>
+
+    <!-- AUDIO -> DISPLAY (diagonal) -->
+    <path d="M 800 393 L 840 543" marker-end="url(#arrow-main)"/>
+  </g>
+
+  <!-- labels (bigger + readable) -->
+  <g font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" font-size="16" font-weight="500" fill="#555555">
+    <text x="318" y="322">encoder delta</text>
+    <text x="318" y="342">(atomic read)</text>
+    <text x="480" y="302">pot values</text>
+    <text x="1018" y="380">state</text>
+    <text x="725" y="475">PWM status</text>
+  </g>
+
+  <!-- footer -->
+  <text x="1230" y="635" text-anchor="end"
+        font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" font-weight="500" fill="#555555">
+    v3.8 keeps everything in one file to expose timing &amp; ISR constraints before v4.0 refactor.
+  </text>
+</svg>
