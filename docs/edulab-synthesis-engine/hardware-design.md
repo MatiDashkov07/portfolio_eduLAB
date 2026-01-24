@@ -402,7 +402,7 @@ The next iteration focuses on **signal integrity**, not features.
 ## 14. Related Documentation
 
 - [Software Architecture](./software-architecture)
-- [Build Guide](./build-guide)
+- [Build Guide](./replication-status)
 - [Inductive Kickback Analysis](/blog/inductive-kickback-analysis)
 
 ---
