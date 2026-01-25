@@ -152,14 +152,14 @@ I don’t need to model it perfectly to know it was a bad design choice.</p>
             <name>Mati Dashkov</name>
             <uri>https://github.com/MatiDashkov07</uri>
         </author>
-        <category label="hardware" term="hardware"/>
-        <category label="gpio" term="gpio"/>
-        <category label="buzzer" term="buzzer"/>
-        <category label="piezo" term="piezo"/>
-        <category label="oscilloscope" term="oscilloscope"/>
-        <category label="esp32" term="esp32"/>
-        <category label="beginner-mistakes" term="beginner-mistakes"/>
-        <category label="edulab-synthesis-engine" term="edulab-synthesis-engine"/>
+        <category label="Hardware" term="Hardware"/>
+        <category label="GPIO" term="GPIO"/>
+        <category label="Buzzer" term="Buzzer"/>
+        <category label="Piezo" term="Piezo"/>
+        <category label="Oscilloscope" term="Oscilloscope"/>
+        <category label="ESP32" term="ESP32"/>
+        <category label="Beginner Mistakes" term="Beginner Mistakes"/>
+        <category label="eduLAB Synthesis Engine" term="eduLAB Synthesis Engine"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Saved by Physics: Analyzing Inductive Kickback & Back EMF]]></title>
@@ -223,15 +223,15 @@ I don’t need to model it perfectly to know it was a bad design choice.</p>
             <name>Mati Dashkov</name>
             <uri>https://github.com/MatiDashkov07</uri>
         </author>
-        <category label="hardware" term="hardware"/>
-        <category label="debugging" term="debugging"/>
-        <category label="theory" term="theory"/>
-        <category label="oscilloscope" term="oscilloscope"/>
-        <category label="esp32" term="esp32"/>
-        <category label="analog-design" term="analog-design"/>
-        <category label="measurements" term="measurements"/>
-        <category label="edulab-synthesis-engine" term="edulab-synthesis-engine"/>
-        <category label="circuit-protection" term="circuit-protection"/>
+        <category label="Hardware" term="Hardware"/>
+        <category label="Debugging" term="Debugging"/>
+        <category label="Theory" term="Theory"/>
+        <category label="Oscilloscope" term="Oscilloscope"/>
+        <category label="ESP32" term="ESP32"/>
+        <category label="Analog Design" term="Analog Design"/>
+        <category label="Measurements" term="Measurements"/>
+        <category label="eduLAB Synthesis Engine" term="eduLAB Synthesis Engine"/>
+        <category label="Circuit Protection" term="Circuit Protection"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Welcome to eduLAB Engineering Blog]]></title>
@@ -267,7 +267,7 @@ I don’t need to model it perfectly to know it was a bad design choice.</p>
             <name>Mati Dashkov</name>
             <uri>https://github.com/MatiDashkov07</uri>
         </author>
-        <category label="announcement" term="announcement"/>
-        <category label="edulab-synthesis-engine" term="edulab-synthesis-engine"/>
+        <category label="Announcement" term="Announcement"/>
+        <category label="eduLAB Synthesis Engine" term="eduLAB Synthesis Engine"/>
     </entry>
 </feed>

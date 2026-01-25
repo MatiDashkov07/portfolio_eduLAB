@@ -149,14 +149,14 @@
 <p>What I observed wasn’t a clean, textbook effect — it was the combined behavior of a weak GPIO driver, a reactive load, and internal protection circuitry.
 I don’t need to model it perfectly to know it was a bad design choice.</p>
 <p>This mistake was worth its weight in gold — because I actually stopped to understand it.</p>]]></content:encoded>
-            <category>hardware</category>
-            <category>gpio</category>
-            <category>buzzer</category>
-            <category>piezo</category>
-            <category>oscilloscope</category>
-            <category>esp32</category>
-            <category>beginner-mistakes</category>
-            <category>edulab-synthesis-engine</category>
+            <category>Hardware</category>
+            <category>GPIO</category>
+            <category>Buzzer</category>
+            <category>Piezo</category>
+            <category>Oscilloscope</category>
+            <category>ESP32</category>
+            <category>Beginner Mistakes</category>
+            <category>eduLAB Synthesis Engine</category>
         </item>
         <item>
             <title><![CDATA[Saved by Physics: Analyzing Inductive Kickback & Back EMF]]></title>
@@ -216,15 +216,15 @@ I don’t need to model it perfectly to know it was a bad design choice.</p>
 <li class="">Implementing a permanent 1N5819 Schottky diode (for faster switching speed) on the PCB v4.0.</li>
 <li class="">Further analysis of the analog filter stage to ensure signal integrity.</li>
 </ul>]]></content:encoded>
-            <category>hardware</category>
-            <category>debugging</category>
-            <category>theory</category>
-            <category>oscilloscope</category>
-            <category>esp32</category>
-            <category>analog-design</category>
-            <category>measurements</category>
-            <category>edulab-synthesis-engine</category>
-            <category>circuit-protection</category>
+            <category>Hardware</category>
+            <category>Debugging</category>
+            <category>Theory</category>
+            <category>Oscilloscope</category>
+            <category>ESP32</category>
+            <category>Analog Design</category>
+            <category>Measurements</category>
+            <category>eduLAB Synthesis Engine</category>
+            <category>Circuit Protection</category>
         </item>
         <item>
             <title><![CDATA[Welcome to eduLAB Engineering Blog]]></title>
@@ -256,8 +256,8 @@ I don’t need to model it perfectly to know it was a bad design choice.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="join-the-journey">Join the Journey<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/welcome-to-edulab-blog#join-the-journey" class="hash-link" aria-label="Direct link to Join the Journey" title="Direct link to Join the Journey" translate="no">​</a></h2>
 <p>If you're interested in embedded systems, hardware design, or just curious about how things work, I hope you'll find something useful here. Feel free to reach out if you have questions or want to discuss projects!</p>
 <p>Let's build something together.</p>]]></content:encoded>
-            <category>announcement</category>
-            <category>edulab-synthesis-engine</category>
+            <category>Announcement</category>
+            <category>eduLAB Synthesis Engine</category>
         </item>
     </channel>
 </rss>
