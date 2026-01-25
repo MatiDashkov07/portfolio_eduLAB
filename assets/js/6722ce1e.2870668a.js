@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkportfolio_edu_lab=globalThis.webpackChunkportfolio_edu_lab||[]).push([[9376],{165(e){e.exports=JSON.parse('{"metadata":{"permalink":"/portfolio_eduLAB/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":2,"blogDescription":"Build logs, debugging stories, and technical deep-dives","blogTitle":"Engineering Blog"}}')}}]);
