@@ -1,19 +1,72 @@
-facebook:
-  label: Facebook
-  permalink: /facebook
-  description: Facebook tag description
+# eduLAB Blog Tags
+# Technical tags for blog posts
 
-hello:
-  label: Hello
-  permalink: /hello
-  description: Hello tag description
+hardware:
+  label: Hardware
+  permalink: /hardware
+  description: Hardware design and debugging
 
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
+debugging:
+  label: Debugging
+  permalink: /debugging
+  description: Debugging stories and solutions
 
-hola:
-  label: Hola
-  permalink: /hola
-  description: Hola tag description
+theory:
+  label: Theory
+  permalink: /theory
+  description: Theoretical explanations
+
+oscilloscope:
+  label: Oscilloscope
+  permalink: /oscilloscope
+  description: Oscilloscope measurements and analysis
+
+esp32:
+  label: ESP32
+  permalink: /esp32
+  description: ESP32 microcontroller projects
+
+analog-design:
+  label: Analog Design
+  permalink: /analog-design
+  description: Analog circuit design
+
+measurements:
+  label: Measurements
+  permalink: /measurements
+  description: Lab measurements and verification
+
+circuit-protection:
+  label: Circuit Protection
+  permalink: /circuit-protection
+  description: Protection circuits and safety
+
+gpio:
+  label: GPIO
+  permalink: /gpio
+  description: GPIO pins and interfacing
+
+buzzer:
+  label: Buzzer
+  permalink: /buzzer
+  description: Buzzers and audio output
+
+piezo:
+  label: Piezo
+  permalink: /piezo
+  description: Piezoelectric components
+
+beginner-mistakes:
+  label: Beginner Mistakes
+  permalink: /beginner-mistakes
+  description: Common mistakes and lessons learned
+
+edulab-synthesis-engine:
+  label: eduLAB Synthesis Engine
+  permalink: /edulab-synthesis-engine
+  description: eduLAB synthesis engine project
+
+announcement:
+  label: Announcement
+  permalink: /announcement
+  description: Project announcements

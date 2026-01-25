@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-slug: /edulab-synthesis-engine/intro
+slug: /intro
 ---
 
 # eduLAB Synthesis Engine: Overview
