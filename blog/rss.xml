@@ -4,10 +4,195 @@
         <title>eduLAB Blog</title>
         <link>https://MatiDashkov07.github.io/portfolio_eduLAB/blog</link>
         <description>eduLAB Blog</description>
-        <lastBuildDate>Sat, 24 Jan 2026 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 02 Feb 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[Killing the Monolith: An OOP Refactor That Exposed Every Hidden Bug]]></title>
+            <link>https://MatiDashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem</link>
+            <guid>https://MatiDashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem</guid>
+            <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[In my preparation for taking the first real step toward eduLAB v4.0, I entered a place most developers actively avoid: refactoring hell.]]></description>
+            <content:encoded><![CDATA[<p>In my preparation for taking the first real step toward <strong>eduLAB v4.0</strong>, I entered a place most developers actively avoid: refactoring hell.</p>
+<p>Up until now, eduLAB lived inside a single ~350-line <code>main.cpp</code> file. It worked. It made sound. It had a UI. But it was fragile. Any small change in one area had a habit of breaking something completely unrelated somewhere else.</p>
+<p>At some point it became clear: continuing development in this state was not sustainable.</p>
+<p>More importantly, I learned something critical over the past few days:</p>
+<blockquote>
+<p><strong>Refactoring does not create bugs — it exposes faulty assumptions that were hidden inside code that worked “by accident.”</strong></p>
+</blockquote>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="context-why-refactoring-was-inevitable">Context: Why Refactoring Was Inevitable<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#context-why-refactoring-was-inevitable" class="hash-link" aria-label="Direct link to Context: Why Refactoring Was Inevitable" title="Direct link to Context: Why Refactoring Was Inevitable" translate="no">​</a></h2>
+<p>Version 3.8 of eduLAB was functionally complete, but architecturally brittle. Every small fix turned into a debugging rabbit hole. Changing UI logic would break audio. Touching input handling would unexpectedly affect system state. Even trivial improvements required carefully tiptoeing around unrelated code paths.</p>
+<p>The problem was not lack of comments or insufficient documentation.<br>
+<!-- -->Unfortunately, <strong>well-styled comments do not turn a 350-line monolithic file into a maintainable system</strong>.</p>
+<p>Audio generation, input handling, UI rendering, and state logic were all mixed together. The code technically worked — but only because execution happened in the “right” order by coincidence.</p>
+<p>The goal of this refactor was not “clean code” or aesthetics. It was:</p>
+<ul>
+<li class="">Separation of concerns (SoC)</li>
+<li class="">Explicit and controlled state handling</li>
+<li class="">Laying the architectural foundation for version 4.0</li>
+</ul>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="from-monolith-to-modules">From Monolith to Modules<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#from-monolith-to-modules" class="hash-link" aria-label="Direct link to From Monolith to Modules" title="Direct link to From Monolith to Modules" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-old-world-briefly">The Old World (Briefly)<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#the-old-world-briefly" class="hash-link" aria-label="Direct link to The Old World (Briefly)" title="Direct link to The Old World (Briefly)" translate="no">​</a></h3>
+<p>The original <code>main.cpp</code> suffered from three classic issues:</p>
+<ul>
+<li class="">Global state — any part of the code could affect any other part, often unintentionally</li>
+<li class="">Tight coupling between unrelated components</li>
+<li class="">Program flow that depended heavily on execution order</li>
+</ul>
+<p>This made reasoning about the system increasingly difficult.</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-new-architecture">The New Architecture<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#the-new-architecture" class="hash-link" aria-label="Direct link to The New Architecture" title="Direct link to The New Architecture" translate="no">​</a></h3>
+<p>The refactor reorganized the project into explicit modules, each with a single responsibility.<br>
+<!-- -->Confirmed abstractions were introduced <strong>only where they reduced coupling</strong> — not where they added artificial structure.</p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">main.cpp</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">├── StateMachine</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│   ├── Menu</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">│   └── DisplayManager</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">├── AudioEngine</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">├── Button</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">├── RotaryEncoder</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">└── Potentiometer</span><br></span></code></pre></div></div>
+<p><code>main.cpp</code> now acts purely as an orchestrator, not a dumping ground for logic.</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="responsibility-map">Responsibility Map<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#responsibility-map" class="hash-link" aria-label="Direct link to Responsibility Map" title="Direct link to Responsibility Map" translate="no">​</a></h3>
+<p>Each module owns exactly one domain:</p>
+<ul>
+<li class=""><strong>AudioEngine</strong> — audio generation and output only</li>
+<li class=""><strong>StateMachine</strong> — the single authority over system state</li>
+<li class=""><strong>Menu</strong> — wave selection logic, acting as a bridge between UI and audio</li>
+<li class=""><strong>DisplayManager</strong> — rendering and layout only</li>
+<li class=""><strong>Button</strong> — button state, debouncing, and press-type detection</li>
+<li class=""><strong>RotaryEncoder</strong> — encoder movement and direction decoding</li>
+<li class=""><strong>Potentiometer</strong> — analog sampling, filtering, and value stability</li>
+</ul>
+<p>While these input classes share a conceptual role, they are intentionally <strong>not part of a shared abstraction or inheritance hierarchy</strong>.</p>
+<p>Each input type has fundamentally different behavior and timing requirements, so they are implemented as independent, purpose-built classes.</p>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-bug-cemetery">The Bug Cemetery<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#the-bug-cemetery" class="hash-link" aria-label="Direct link to The Bug Cemetery" title="Direct link to The Bug Cemetery" translate="no">​</a></h2>
+<div class="theme-admonition theme-admonition-warning admonition_xJq3 alert alert--warning"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"></path></svg></span>warning</div><div class="admonitionContent_BuS1"><p>Every bug described below already existed.<br>
+<!-- -->The refactor didn’t introduce them — it removed the camouflage that allowed them to hide.</p></div></div>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="bug-postmortems">Bug Postmortems<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#bug-postmortems" class="hash-link" aria-label="Direct link to Bug Postmortems" title="Direct link to Bug Postmortems" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="bug-1--the-silence-bug-triangle--saw">Bug #1 — The Silence Bug (Triangle / Saw)<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#bug-1--the-silence-bug-triangle--saw" class="hash-link" aria-label="Direct link to Bug #1 — The Silence Bug (Triangle / Saw)" title="Direct link to Bug #1 — The Silence Bug (Triangle / Saw)" translate="no">​</a></h3>
+<p><strong>Symptom</strong><br>
+<!-- -->Selecting Triangle or Saw resulted in silence unless a potentiometer was moved.</p>
+<p><strong>Root Cause</strong><br>
+<!-- -->Internal state desynchronization.<br>
+<!-- -->A feedback tone temporarily set the PWM duty cycle to zero, but the <code>AudioEngine</code>’s cached state (<code>lastAppliedDuty</code>) was not updated.<br>
+<!-- -->The engine believed the output was already correct and optimized away the write.</p>
+<p><strong>Fix</strong><br>
+<!-- -->Explicitly synchronize internal state with the actual hardware state.</p>
+<div class="language-cpp codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-cpp codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token comment" style="color:#999988;font-style:italic">// AudioEngine.cpp</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">lastAppliedDuty </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> </span><span class="token number" style="color:#36acaa">0</span><span class="token punctuation" style="color:#393A34">;</span><br></span></code></pre></div></div>
+<p><strong>Verification</strong><br>
+<!-- -->All waveform transitions now behave identically to the pre-refactor version.</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="bug-2--encoder-bypass-while-muted">Bug #2 — Encoder Bypass While Muted<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#bug-2--encoder-bypass-while-muted" class="hash-link" aria-label="Direct link to Bug #2 — Encoder Bypass While Muted" title="Direct link to Bug #2 — Encoder Bypass While Muted" translate="no">​</a></h3>
+<p><strong>Symptom</strong><br>
+<!-- -->Rotating the encoder while muted unmuted the system and jumped directly into the menu.</p>
+<p><strong>Root Cause</strong><br>
+<code>StateMachine::onEncoderMoved()</code> transitioned to MENU unconditionally, ignoring the MUTE state.</p>
+<p><strong>Fix</strong><br>
+<!-- -->State-aware gating: encoder movement is ignored while muted.</p>
+<div class="language-cpp codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-cpp codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token keyword" style="color:#00009f">if</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">(</span><span class="token plain">currentState </span><span class="token operator" style="color:#393A34">==</span><span class="token plain"> MUTE</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    </span><span class="token keyword" style="color:#00009f">return</span><span class="token punctuation" style="color:#393A34">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token punctuation" style="color:#393A34">}</span><br></span></code></pre></div></div>
+<div class="theme-admonition theme-admonition-tip admonition_xJq3 alert alert--success"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></span>tip</div><div class="admonitionContent_BuS1"><p><strong>Lesson:</strong> Events must be filtered by state — not blindly executed.</p></div></div>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="bug-3--the-delayed-beep">Bug #3 — The Delayed Beep<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#bug-3--the-delayed-beep" class="hash-link" aria-label="Direct link to Bug #3 — The Delayed Beep" title="Direct link to Bug #3 — The Delayed Beep" translate="no">​</a></h3>
+<p><strong>Symptom</strong><br>
+<!-- -->The mute/unmute beep occurred only after releasing the button.</p>
+<p><strong>Root Cause</strong><br>
+<!-- -->Long-press detection was coupled to button release, delaying the event.</p>
+<p><strong>Fix</strong><br>
+<!-- -->Separate the concepts:</p>
+<ul>
+<li class="">Long-press event timing</li>
+<li class="">Button release for state reset</li>
+</ul>
+<p><strong>Design Insight</strong><br>
+<!-- -->An event should fire when its condition becomes true — not when another condition ends.</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="bug-4--broken-first-unmute">Bug #4 — Broken First Unmute<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#bug-4--broken-first-unmute" class="hash-link" aria-label="Direct link to Bug #4 — Broken First Unmute" title="Direct link to Bug #4 — Broken First Unmute" translate="no">​</a></h3>
+<p><strong>Symptom</strong><br>
+<!-- -->The first unmute showed a partially rendered PLAYING screen with muted audio.</p>
+<p><strong>Root Cause</strong><br>
+<!-- -->The system booted with <code>selectedMode = -1</code>.<br>
+<!-- -->Unmuting jumped directly into PLAYING with an invalid mode index.</p>
+<p><strong>Fix</strong><br>
+<!-- -->Force the user through the menu if no mode has been selected yet.</p>
+<div class="language-cpp codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-cpp codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token keyword" style="color:#00009f">if</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">(</span><span class="token plain">menu</span><span class="token punctuation" style="color:#393A34">.</span><span class="token function" style="color:#d73a49">getSelectedMode</span><span class="token punctuation" style="color:#393A34">(</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">==</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">-</span><span class="token number" style="color:#36acaa">1</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    currentState </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> MENU</span><span class="token punctuation" style="color:#393A34">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token punctuation" style="color:#393A34">}</span><span class="token plain"> </span><span class="token keyword" style="color:#00009f">else</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    currentState </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> PLAYING</span><span class="token punctuation" style="color:#393A34">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token punctuation" style="color:#393A34">}</span><br></span></code></pre></div></div>
+<p><strong>Lesson</strong><br>
+<!-- -->Never assume initialization paths were executed — enforce them.</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="bug-5--off-center-splash-screen">Bug #5 — Off-Center Splash Screen<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#bug-5--off-center-splash-screen" class="hash-link" aria-label="Direct link to Bug #5 — Off-Center Splash Screen" title="Direct link to Bug #5 — Off-Center Splash Screen" translate="no">​</a></h3>
+<p><strong>Symptom</strong><br>
+<!-- -->The splash screen text was aligned too far to the left.</p>
+<p><strong>Root Cause</strong><br>
+<!-- -->Hardcoded drawing coordinates.</p>
+<p><strong>Fix</strong><br>
+<!-- -->Use the centralized <code>drawCenteredText()</code> helper.</p>
+<p><strong>Why It Matters</strong><br>
+<!-- -->This bug was cosmetic, but it validated that layout responsibility now belongs exclusively to <code>DisplayManager</code>.</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="bug-6--menu-freeze">Bug #6 — Menu Freeze<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#bug-6--menu-freeze" class="hash-link" aria-label="Direct link to Bug #6 — Menu Freeze" title="Direct link to Bug #6 — Menu Freeze" translate="no">​</a></h3>
+<p><strong>Symptom</strong><br>
+<!-- -->Audio output froze whenever the system entered MENU mode.</p>
+<p><strong>Root Cause</strong><br>
+<!-- -->A guard clause prevented <code>AudioEngine::update()</code> while in MENU state.</p>
+<p><strong>Fix</strong><br>
+<!-- -->Remove the guard.<br>
+<!-- -->The menu is UI — audio should remain continuous.</p>
+<p><strong>Architectural Lesson</strong><br>
+<!-- -->UI state should not dictate audio engine execution unless explicitly required.</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="bug-7--the-critical-hard-lock">Bug #7 — The Critical Hard Lock<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#bug-7--the-critical-hard-lock" class="hash-link" aria-label="Direct link to Bug #7 — The Critical Hard Lock" title="Direct link to Bug #7 — The Critical Hard Lock" translate="no">​</a></h3>
+<p><strong>Symptom</strong><br>
+<!-- -->After the first unmute, the button stopped responding entirely.<br>
+<!-- -->No mode selection, no beep, no recovery.</p>
+<p><strong>Root Cause</strong><br>
+<!-- -->A logical impossibility:</p>
+<ul>
+<li class="">Button release logic (<code>HIGH</code>) was nested inside the pressed (<code>LOW</code>) block</li>
+<li class="">The reset path was unreachable</li>
+</ul>
+<p><strong>Fix</strong><br>
+<!-- -->Move release detection outside the pressed block.</p>
+<p><strong>Lesson</strong><br>
+<!-- -->The refactor didn’t break this logic — it made the impossible visible.</p>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="verification-strategy">Verification Strategy<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#verification-strategy" class="hash-link" aria-label="Direct link to Verification Strategy" title="Direct link to Verification Strategy" translate="no">​</a></h2>
+<p>To verify correctness, I compared the refactored system against the last stable pre-refactor build after every fix.</p>
+<p>The success criterion was simple:<br>
+<strong>identical observable behavior under a cleaner architecture</strong>.</p>
+<p>No new features.<br>
+<!-- -->No “improvements”.<br>
+<!-- -->Just equivalence without relying on accidental execution order.</p>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="lessons-learned">Lessons Learned<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#lessons-learned" class="hash-link" aria-label="Direct link to Lessons Learned" title="Direct link to Lessons Learned" translate="no">​</a></h2>
+<ul>
+<li class="">Refactoring does not create bugs — it exposes hidden assumptions</li>
+<li class="">Events are not the same as state transitions</li>
+<li class="">UI state should never own audio execution</li>
+<li class="">Initialization paths must be enforced, not assumed</li>
+<li class="">If a condition cannot happen, the code should make it impossible</li>
+</ul>
+<p>An additional skill that became painfully obvious during this process was <strong>physical QA testing</strong> — systematically exploring edge cases and comparing real-world behavior between versions.</p>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="what-this-enables-next">What This Enables Next<a href="https://matidashkov07.github.io/portfolio_eduLAB/blog/v38-refactor-postmortem#what-this-enables-next" class="hash-link" aria-label="Direct link to What This Enables Next" title="Direct link to What This Enables Next" translate="no">​</a></h2>
+<p>This refactor lays the groundwork for:</p>
+<ul>
+<li class="">An abstract <code>AudioDriver</code></li>
+<li class="">A future I2S backend</li>
+<li class="">True waveform generation (not PWM tricks)</li>
+<li class="">Polyphony in later versions</li>
+</ul>
+<p>This was not refactoring for refactoring’s sake —<br>
+<!-- -->it was a necessary architectural step.</p>
+<hr>
+<p><strong>Refactoring didn’t make the system cleaner.</strong><br>
+<strong>It made incorrect assumptions impossible to ignore.</strong></p>]]></content:encoded>
+            <category>embedded</category>
+            <category>cpp</category>
+            <category>oop</category>
+            <category>refactor</category>
+            <category>architecture</category>
+            <category>Debugging</category>
+            <category>ESP32</category>
+        </item>
         <item>
             <title><![CDATA[Why You Should Think Twice Before Connecting a Buzzer Directly to a GPIO]]></title>
             <link>https://MatiDashkov07.github.io/portfolio_eduLAB/blog/never-connect-buzzer-directly</link>
