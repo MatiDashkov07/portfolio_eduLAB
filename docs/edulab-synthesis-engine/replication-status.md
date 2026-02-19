@@ -5,116 +5,181 @@ title: Replication Status
 
 # Replication Status
 
-> **TL;DR:** v3.8 is not ready for replication. This page explains why and what to expect in future versions.
+> **TL;DR:** v4.0 is the first replicable version of eduLAB. v3.8 remains documented for learning purposes only.
 
 ---
 
-## Current State: v3.8 (Not Recommended for Replication)
+## Current Recommended Version: v4.0 (Hi-Fi Architecture)
 
-The v3.8 hardware is a **learning prototype**, not a finished product. It was built to understand:
+v4.0 is the **first architecture designed with replication in mind**.
+
+It represents the transition from an experimental learning prototype to a structurally sound embedded audio system.
+
+### What v4.0 Includes
+
+-  44.1 kHz / 16-bit I2S audio
+-  PCM5102A DAC (self-clocked mode)
+-  Sample-accurate timing (clock-driven, not event-driven)
+-  Dual-core real-time separation (Audio vs UI)
+-  Polyphonic DDS engine (4 voices)
+-  Logarithmic frequency mapping
+-  Clean line-level analog output
+-  Fully modular OOP architecture
+
+**Status:** Complete  
+**Hardware:** Breadboard prototype (validated and measured)  
+**Documentation:** Hardware + Software pages updated  
+**Build Guide:** In preparation  
+
+---
+
+## Legacy Version: v3.8 (Transistor / PWM Era)
+
+v3.8 is preserved for educational transparency.
+
+It was built to understand:
 
 - Transistor switching behavior
-- Inductive load protection
+- Inductive kickback and flyback protection
 - PWM audio limitations
-- Real-time embedded constraints
+- ISR interaction with main loop
+- Real-time constraints without a sample clock
 
-### Why You Shouldn't Build v3.8:
+### Why v3.8 Is Not Recommended for Replication
 
-- **Audio quality:** ~8-bit PWM (intentionally lo-fi)
-- **No proper output stage:** Direct transistor → speaker
-- **Breadboard-only:** No PCB design
-- **Missing features:** No DAC, no filters, no proper volume control
-- **Known issues:** Pitch quantization, encoder noise, power rail interference
+-  ~8-bit equivalent PWM audio
+-  No true DAC
+-  Direct transistor → speaker drive
+-  No reconstruction filtering
+-  No proper output stage
+-  Breadboard-only implementation
+-  Audible jitter and pitch quantization
 
-**If you build v3.8, you'll learn the same lessons I did — but you'll immediately want to upgrade to v4.0.**
+v3.8 is intentionally primitive.
+
+It teaches fundamentals —  
+but it is not the system eduLAB is evolving toward.
 
 ---
 
-## Next: v4.0 (Coming Soon)
+## What Replication Means in This Project
 
-v4.0 will be the **first replicable version** with:
+Replication does not mean:
 
-- ✅ I2S audio (PCM5102A DAC)
-- ✅ Op-amp output stage
-- ✅ Proper 3.5mm line output
-- ✅ Full OOP software architecture
-- ✅ Breadboard layout guide
-- ⏳ Optional: KiCad schematics (learning PCB design)
+- Copying a schematic blindly
+- Ordering parts without understanding the signal chain
 
-**Timeline:** ~6 weeks (components already ordered)
+Replication means:
 
-**Build Guide Status:** Will be published with v4.0 release
+- Understanding the digital audio pipeline
+- Knowing why I2S replaced PWM
+- Being able to trace signal flow from UI input to DAC output
+- Being aware of breadboard limitations
+
+v4.0 is the first version where replication produces a **technically meaningful result**, not just a learning experiment.
 
 ---
 
 ## What You Can Do Now
 
-### Option 1: Follow the Journey
+### Option 1 — Study the Architecture
 
-Read the blog posts to understand the **why** behind design decisions:
-
-- [Inductive Kickback Analysis](/blog/inductive-kickback-analysis)
-- [Hardware Design Documentation](./hardware-design)
+- [Hardware Design](./hardware-design)
 - [Software Architecture](./software-architecture)
 
-### Option 2: Study the Code
-
-The v3.8 firmware is fully documented and available:
-
-- [Source Code](https://github.com/MatiDashkov07/portfolio_eduLAB/blob/main/src/main.cpp)
-- Single-file implementation (~450 lines)
-- Useful for learning embedded state machines
-
-### Option 3: Wait for v4.0
-
-Subscribe to updates (GitHub Watch or RSS feed) to be notified when the Build Guide is published.
+These pages document the system exactly as it exists.
 
 ---
 
-## Bill of Materials (v3.8 Reference)
+### Option 2 — Explore the Code
 
-Documented here for transparency only. **Do not purchase these for replication.**
+The full repository is available:
 
-### Core Components (What Was Actually Used)
+- https://github.com/MatiDashkov07/eduLAB-Synthesis-Engine
 
-| Component | Part | Quantity | Notes |
-|-----------|------|----------|-------|
-| MCU | ESP32-S3-N16R8 DevKitC | 1 | Main processor |
-| Display | SSD1306 OLED 0.91" | 1 | I2C interface |
-| Transistor | 2N2222 NPN | 1 | Audio driver |
-| Diode | 1N4007 | 1 | Flyback protection |
-| Speaker | 8Ω passive | 1 | Direct drive |
-| Potentiometers | RV09 10kΩ | 2 | Pitch/Duty control |
-| Encoder | HW-040 (EC11) | 1 | Menu navigation |
-| Resistors | 1kΩ | 1 | Base resistor |
+v4.0 introduces:
 
-### What's NOT Here (Despite Being in Old BOM)
-
-- ❌ Op-amps (planned for v4.0)
-- ❌ DAC modules (planned for v4.0)
-- ❌ RC filters (planned for v4.0)
-- ❌ Audio jack (planned for v4.0)
+- AudioEngine abstraction
+- Voice + WaveformGenerator hierarchy
+- Dual-core task separation
+- DMA-driven audio buffering
 
 ---
 
-## Related Documentation
+### Option 3 — Wait for the Structured Build Guide
 
-- [Hardware Design](./hardware-design) - What exists now
-- [Software Architecture](./software-architecture) - How it works
-- [Project Roadmap](/blog/welcome-to-edulab-blog) - Where it's going
+A formal step-by-step replication guide will include:
+
+- Wiring diagram
+- Verified I2S pin mapping
+- PCM5102A strapping configuration
+- Breadboard layout guidance
+- Known pitfalls checklist
+
+This will be published once documentation stabilizes.
+
+---
+
+## Bill of Materials — v4.0 Reference
+
+Documented for transparency.
+
+### Core Components
+
+| Component | Part | Notes |
+|-----------|------|-------|
+| MCU | ESP32-S3 DevKitC | Dual-core FreeRTOS |
+| DAC | PCM5102A module | I2S, self-clocked |
+| Display | SSD1306 OLED | I2C interface |
+| Encoder | EC11 / HW-040 | Menu navigation |
+| Potentiometers | 10kΩ | Frequency / Control |
+| Output | 3.5mm line out | Clean analog stage |
+
+### Breadboard Disclaimer
+
+This is still a **breadboard prototype**.
+
+While functionally validated, breadboards introduce:
+
+- Signal integrity noise
+- Parasitic capacitance
+- Ground impedance variation
+
+v5.0 will move toward a more controlled hardware platform.
+
+---
+
+## Roadmap Context
+
+- **v3.8:** PWM + transistor learning platform
+- **v4.0:** I2S + modular DSP architecture (current)
+- **v5.0:** Teensy 4.1 + bare-metal + improved analog sandbox
+
+Replication is meaningful starting at v4.0.  
+Architectural evolution continues in v5.0.
 
 ---
 
 ## FAQ
 
-**Q: Can I still build v3.8 even though it's not recommended?**  
-A: Technically yes, but you'll need to source parts yourself and debug breadboard issues. The schematic is available in the Hardware Design page.
+**Q: Can I still build v3.8?**  
+Yes. It is documented for educational purposes. It is not recommended as a final system.
 
-**Q: When will v4.0 be ready?**  
-A: Target: ~6 weeks from now. Components are ordered. Follow the blog for updates.
+**Q: Is v4.0 production-ready?**  
+No. It is architecturally correct and measured, but still a prototype platform.
 
-**Q: Will there be PCB files?**  
-A: Maybe in v4.0 (learning KiCad), definitely by v5.0 (Teensy 4.1 version).
+**Q: Will PCB files be released?**  
+Possibly in a future revision. v5.0 is a stronger candidate for PCB development.
 
-**Q: Can I contribute?**  
-A: Not yet - this is a personal learning project. Once v4.0 is stable, I may accept suggestions.
+**Q: Is this open for contributions?**  
+Not at this stage. eduLAB is currently a controlled learning project.
+
+---
+
+## Closing
+
+v3.8 proved fundamental understanding.
+
+v4.0 proves architectural maturity.
+
+Replication begins where engineering becomes intentional.

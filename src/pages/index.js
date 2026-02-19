@@ -54,8 +54,8 @@ function FeaturedProject() {
           <div className={styles.projectContent}>
             <Heading as="h3">eduLAB Synthesis Engine</Heading>
             <p>
-              A work-in-progress embedded audio project documenting the path from low-level PWM experiments to a future DSP-based synthesis platform.
-              Built to explore real-time constraints, hardware–software interaction, and audio signal generation — with an emphasis on learning, measurement, and transparency rather than finished features.
+              An evolving embedded audio system tracing the transition from transistor-level PWM experiments to a modular, clock-accurate DSP architecture.
+              Focused on real-time determinism, hardware–software co-design, and measurable signal integrity — prioritizing understanding and architectural correctness over feature checklists.
             </p>
             <div className={styles.techTags}>
               <span className="tech-tag">Embedded Systems</span>

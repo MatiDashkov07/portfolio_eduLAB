@@ -3,456 +3,401 @@ sidebar_position: 3
 title: Software Architecture
 ---
 
-# Software Architecture — v3.8
+# Software Architecture — v4.0
 
-> Documentation of the current software implementation.
+> Documentation of the current software implementation (v4.0 “The Hi-Fi Leap”).
 
 ---
 
 ## 1. What This Page Documents
 
-This page describes the **v3.8 software architecture** as it exists now — not as planned, not idealized.
+This page describes the **v4.0 software architecture** exactly as it exists now — not as planned, not as imagined.
 
-This is a deliberately simple, single-file, procedural implementation. The goal is not modularity or scalability. The goal is understanding real-time embedded constraints, state machines, and interrupt-driven input **before** introducing OOP abstractions.
+v4.0 marks the transition from:
 
-**v3.8 is intentionally non-modular.**
+- Monolithic procedural firmware (v3.8)
+- PWM-based audio tricks
 
-There is no class hierarchy. There is no HAL. There is no separate audio thread.
+to:
 
-These are not oversights — they are pedagogical choices.
+- True I2S digital audio
+- Multi-file OOP architecture
+- Dual-core real-time separation
+- Polyphonic synthesis engine
 
----
-
-## 2. Design Philosophy: Monolithic First
-
-Before building a multi-file OOP architecture, I wanted to understand:
-
-- How state machines manage UI flow
-- How interrupts interact with main loop logic
-- How to prevent race conditions in embedded systems
-- What filtering is required for noisy ADC inputs
-- Why certain ESP32 peripheral calls must happen in specific order
-
-**The entire firmware is ~450 lines in a single file.**
-
-This makes the control flow transparent. Every variable, every function, every dependency is visible in one place.
-
-:::warning Why This Is NOT How Professionals Do It
-
-This architecture violates multiple professional best practices:
-- Monolithic file structure
-- Global state variables
-- Shared state between ISR and main loop (requires careful atomic access)
-- No separation of concerns
-- No hardware abstraction layer
-
-**This is intentional.**
-
-The goal is to expose real embedded constraints before abstraction hides them.
-
-Professional refactoring begins in v4.0.
-:::
+This is the first version where the software architecture is intentionally designed for **scalability, determinism, and portability**.
 
 ---
 
-## 3. System Overview
-![Software System Overview — v3.8](/img/projects/software-flowchart-v3.8.svg)
+## 2. Architectural Objectives (v4.0)
 
-**Execution model:** Single-threaded with interrupt service routine (ISR)
+The refactor had four strict goals:
 
-**Data flow direction:**
-```
-ISR updates encoder position → Main loop consumes it
-Never the other way around
-```
+###  Real-Time Audio Determinism  
+Audio must never glitch because of UI rendering.
+
+###  Separation of Concerns  
+UI logic must never pollute DSP logic.
+
+###  Portability  
+The DSP core must be portable to Teensy 4.1 (v5.0).
+
+###  Transparency  
+Despite OOP abstraction, the signal path must remain explainable from first principles.
 
 ---
 
-## 4. File Structure
-```
+## 3. High-Level System Overview
+
+![Software Architecture Overview — v4.0](/img/projects/software-architecture-v4-overview.png)
+
+**Execution Model:** Dual-core FreeRTOS (ESP32-S3)
+
+* **Core 0** → Dedicated Audio Task
+* **Core 1** → UI + Control Loop
+
+**Data Flow:**
+
+1. UI Input
+2. StateMachine
+3. AudioEngine
+4. I2S DMA
+5. PCM5102A
+6. Analog Output
+
+Audio never waits for UI.  
+UI never blocks audio.
+
+That separation is the entire reason v4.0 exists.
+
+---
+
+## 4. Project Structure (Actual v4.0)
+
+```text
+lib/
+├── AudioEngine/
+│   ├── AudioEngine.h
+│   ├── AudioEngine.cpp
+│   └── Waveforms/
+│       ├── WaveformGenerator.h
+│       └── Waveforms.h
+├── Voice/
+│   ├── Voice.h
+│   └── Voice.cpp
+├── Menu/
+├── StateMachine/
+├── DisplayManager/
+├── Button/
+├── RotaryEncoder/
+└── Potentiometer/
 src/
-└── main.cpp  (ENTIRE PROJECT - ~450 lines)
-    ├── 1. Hardware Configuration
-    ├── 2. Potentiometer Class (EMA Filter)
-    ├── 3. State Management (Global Variables)
-    ├── 4. Interrupt Service Routine (Encoder)
-    ├── 5. Helper Functions
-    ├── 6. Graphics Functions
-    ├── 7. setup()
-    └── 8. loop()
+└── main.cpp
 ```
 
-**Why single-file?**
+Each module has a single responsibility.
 
-- No build complexity
-- No header/implementation split confusion
-- Complete visibility of execution flow
-- Forces understanding of scope and lifetime
-
-**What this is NOT:**
-
-- ❌ Not modular
-- ❌ Not reusable
-- ❌ Not scalable
-- ❌ Not professional architecture
-
-**But it IS:**
-
-- ✅ Readable
-- ✅ Debuggable
-- ✅ Educational
-- ✅ Sufficient for learning
+This is no longer a single-file firmware.
 
 ---
 
-## 5. The ONE Class: Potentiometer
-
-The only OOP structure in v3.8.
-```cpp
-class Potentiometer {
-  private:
-    int pin;
-    float filteredValue;      // EMA accumulator
-    float alpha;              // Smoothing factor
-    int lastStableValue;      // Hysteresis state
-    int threshold;            // Change detection threshold
-    
-  public:
-    Potentiometer(int p, float a = 0.15, int th = 40);
-    void begin();
-    bool update();            // Returns true if value changed
-    int getValue();
-};
-```
-
-**Purpose:** Smooth noisy ADC readings
-
-**Algorithm:** Exponential Moving Average (EMA) + Hysteresis
-
-$$
-V_{\text{filtered}} = \alpha \cdot V_{\text{raw}} + (1 - \alpha) \cdot V_{\text{filtered}}
-$$
-
-**Parameters (tuned empirically):**
-- $\alpha = 0.15$ (faster response)
-- Threshold = 40 LSB (aggressive filtering)
-
-**Why this exists as a class:**
-
-- Encapsulates filter state
-- Allows multiple independent pots
-- Demonstrates basic OOP without overcomplicating
-
-**What it does NOT do:**
-
-- ❌ Polymorphism
-- ❌ Inheritance
-- ❌ Abstract interfaces
+## 5. Core Components
 
 ---
 
-## 6. State Management
+### 5.1 AudioEngine — The DSP Core
 
-### 6.1 UI State Machine
+**Responsibilities:**
+- I2S initialization
+- DMA buffer management
+- Mixing voices
+- Feedback tone generation
+- Master volume control
+
+**Core mixing logic:**
+
 ```cpp
-enum UIState { STATE_PLAYING, STATE_MENU };
-UIState currentUIState = STATE_MENU;
-```
+for (int i = 0; i < BUFFER_SIZE; i++) {
+    float mixedSample = 0.0f;
 
-| State | Trigger | Display | Encoder Behavior |
-|-------|---------|---------|------------------|
-| `STATE_MENU` | Boot / Encoder turn | Mode selection screen | Scroll through waveforms |
-| `STATE_PLAYING` | Button press / Timeout | Live frequency display | (Not used in v3.8) |
-
-**Timeout behavior:** After 10 seconds of inactivity in MENU, auto-return to PLAYING
-
-### 6.2 Mute State
-```cpp
-bool isMuted = true;  // Starts muted on boot
-```
-
-**Toggle:** Long press (800ms) on encoder button
-
-**Safety:** System ALWAYS boots muted to prevent audio surprises
-
-### 6.3 Waveform Modes
-```cpp
-const char* menuItems[] = {"SQUARE", "SAW", "TRIANGLE", "NOISE"};
-int selectedMode = -1;  // -1 = no mode selected yet
-```
-
-| Mode | Implementation | Duty Cycle Behavior |
-|------|----------------|---------------------|
-| 0: Square | Fixed 50% duty | Pot2 controls duty (square → pulse) |
-| 1: Saw | Variable duty | Pot2 sweeps 0-100% |
-| 2: Triangle | Variable duty | Triangle-like waveform using PWM duty sweep (not mathematically linear) |
-| 3: Noise | Randomized freq + duty | Pot1 controls noise ceiling |
-
-**Note:** These are PWM duty cycle approximations, not true waveform synthesis.
-
----
-
-## 7. Interrupt Service Routine (ISR)
-```cpp
-void IRAM_ATTR updateEncoder() {
-  unsigned long interruptTime = millis();
-  
-  // Debounce: 10ms lockout
-  if (interruptTime - lastInterruptTime > 10) {
-    if (digitalRead(PIN_CLK) != digitalRead(PIN_DT)) {
-      virtualPosition++;
-    } else {
-      virtualPosition--;
+    for (int v = 0; v < MAX_VOICES; v++) {
+        if (voices[v].isActive()) {
+            mixedSample += voices[v].getNextSample();
+        }
     }
-    lastInterruptTime = interruptTime;
-  }
+
+    mixedSample /= MAX_VOICES;
+    mixedSample *= masterVolume;
+
+    audioBuffer[i] = convertToInt16(mixedSample);
 }
 ```
 
-**Attached to:** `PIN_DT` falling edge  
-**Priority:** Hardware interrupt (highest)  
-**Critical section:** Reads `virtualPosition` protected with `noInterrupts()` / `interrupts()`
+**Mathematically:**
 
-**Why IRAM_ATTR?**
+$$y[n] = \left(\frac{1}{N} \sum_{i=1}^{N} v_i[n]\right) \cdot V_{master}$$
 
-ESP32-specific: Ensures the ISR resides in instruction RAM, avoiding flash/cache dependency during interrupt execution.
+This prevents clipping even when multiple voices are active.
 
-:::caution Implementation Note
+### 5.2 Voice — Independent Sound Unit
 
-Using `millis()` inside an ISR is not ideal practice, but is acceptable here due to:
-- Human-driven interrupt source
-- Typical interrupt rates in the tens to hundreds per second during rotation
-- No strict timing requirements
+Each `Voice` owns:
+- `phase`
+- `frequency`
+- `amplitude`
+- `phaseIncrement`
+- `WaveformGenerator*`
 
-This will be refactored to use hardware timer counters in v4.0.
-:::
+Wave generation uses a phase accumulator:
+
+$$\text{phase} \mathrel{+}= \frac{2\pi f}{F_s}$$
+
+
+
+This is true Direct Digital Synthesis (DDS).  
+Not PWM.  
+Not duty-cycle tricks.  
+Actual waveform mathematics.
+
+### 5.3 WaveformGenerator (Abstract Base)
+
+**Polymorphic interface:**
+
+```cpp
+virtual float getSample(float phase) = 0;
+```
+
+**Implementations:**
+- Sine
+- Triangle
+- Square
+- Saw
+- Noise
+
+All normalized to: $[-1.0, 1.0]$
+
+This allows waveform swapping without changing engine logic.
+
+### 5.4 StateMachine — System Coordinator
+
+```cpp
+enum State { MUTE, MENU, PLAYING };
+```
+
+הנה הקטע שביקשת, מעוצב בדיוק לפי הכללים עם בלוק הקוד סגור כהלכה:
+
+Markdown
+**Responsibilities:**
+- Transition logic
+- Mode selection
+- Timeout handling
+- Feedback triggering
+
+**Important principle:** `StateMachine` never generates audio directly. It instructs `AudioEngine` what to do.
+
+### 5.5 Input Modules
+
+Encapsulated hardware components:
+- `Button`
+- `RotaryEncoder`
+- `Potentiometer`
+
+The encoder now uses:
+- Gray-code state table decoding
+- No time-based debounce
+- ISR-safe static wrapper
+- Half-step resolution
+
+This removed false direction detection present in v3.8.
 
 ---
 
-## 8. Main Loop Structure
+## 6. Dual-Core Real-Time Architecture
+
+
+
+### Core 0 — Audio Task
+
+```cpp
+while (true) {
+    audioEngine.update();
+    i2s_write(...);  // blocks ≈ 5.8ms
+}
+```
+
+The blocking `i2s_write()` call is intentional.
+
+**Buffer configuration:**
+- 256 samples
+- 44.1 kHz
+- ≈ 5.8 ms per buffer
+
+This is the real-time heartbeat of the system.
+
+### Core 1 — UI Loop
+
 ```cpp
 void loop() {
-  // A. Button handling (short/long press detection)
-  // B. Encoder position read (atomic access)
-  // C. UI state transitions
-  // D. Display update (capped at 20 FPS)
-  // E. Potentiometer filtering
-  // F. Audio engine (PWM control)
+    button.update();
+    encoder.update();
+    pot.update();
+    stateMachine.update();
+    displayManager.update();
+    delay(10);
 }
 ```
 
-**Loop characteristics:**
-- Frequency: ~7.6 kHz (measured under typical load) `[MEASURED]`
-- Display refresh: 20 FPS (50ms interval cap)
-- Audio update:
-  - On potentiometer change (normal modes)
-  - Continuous random update (NOISE mode)
+Display I2C operations take 10–12 ms.  
+Without core separation, audio would underrun.  
+This was experimentally verified before refactoring.
 
 ---
 
-## 9. Timing Model
+## 7. I2S Configuration
 
-**Critical understanding:**
+**Configured as:**
+- 44.1 kHz sample rate
+- 16-bit
+- Stereo (mono duplicated L/R)
+- DMA buffering
+- Master mode
 
-- Audio output is **NOT sample-accurate**
-- PWM frequency updates are **event-driven**, not clock-driven
-- No fixed sample clock exists in v3.8
-- Timing jitter is visible on oscilloscope measurements
+**Measured on oscilloscope:**
+- LRCK: 44.1 kHz
+- BCK: 1.4112 MHz
 
-**Why this matters:**
 
-This limitation directly motivated the v4.0 I2S refactor.
 
-| Aspect | PWM (v3.8) | DAC (v4.0 planned) |
-|--------|------------|---------------------|
-| Timing | Event-based | Sample-clocked (target) |
-| Jitter | High (visible) | Low (target) |
-| Filtering | External RC | Digital reconstruction |
-| Audio Quality | Lo-Fi (~8-bit) | Hi-Fi (16-bit target) |
-| Sample Rate | Variable | Fixed 44.1 kHz (target) |
+**Audio is now clock-driven — not event-driven.**
 
 ---
 
-## 10. Audio Engine (PWM Generation)
+## 8. Logarithmic Frequency Mapping
+
+Linear mapping feels robotic. v4.0 implements:
+
+$$
+f(t) = f_{min} \cdot \left(\frac{f_{max}}{f_{min}}\right)^t
+$$
+
+Where:
+
+$$
+t = \frac{\text{ADC}}{4095}
+$$
+
+**Result:**
+- Sub-Hz precision at low frequencies
+- Smooth perceptual sweep
+- No stepping artifacts
+
+
+
+---
+
+## 9. Polyphony (Proof of Concept)
+
 ```cpp
-if (!isMuted && selectedMode != -1) {
-  if (selectedMode == 3) {
-    // NOISE mode
-    int noiseFreq = random(200, noiseCeiling);
-    int noiseDuty = random(10, 255);
-    ledcChangeFrequency(LEDC_CHANNEL, noiseFreq, LEDC_RESOLUTION);
-    ledcWrite(LEDC_CHANNEL, noiseDuty);
-  } else {
-    // Normal modes
-    int targetFrequency = map(potPitch.getValue(), 0, 4095, 350, 2000);
-    int targetDuty = map(potTone.getValue(), 0, 4095, 0, 255);
-    
-    ledcChangeFrequency(LEDC_CHANNEL, targetFrequency, LEDC_RESOLUTION);
-    ledcWrite(LEDC_CHANNEL, targetDuty);
-  }
-}
+#define MAX_VOICES 4
 ```
 
-**Critical bug fix:** Order matters!
-```cpp
-❌ WRONG: ledcWrite() then ledcChangeFrequency()
-✅ CORRECT: ledcChangeFrequency() then ledcWrite()
-```
+**Demonstrated:**
+- Root
+- Major third
+- Perfect fifth
 
-Using `ledcWriteTone()` corrupts duty cycle settings.  
-This was discovered via oscilloscope debugging.
+Software mixing only.  
+Single DAC handles all voices.
 
----
-
-## 11. Display Rendering
-
-All graphics are **procedurally generated** — no bitmaps stored.
-```cpp
-void drawWaveIcon(int mode, int x, int y) {
-  switch(mode) {
-    case 0: /* Draw square wave lines */
-    case 1: /* Draw sawtooth lines */
-    case 2: /* Draw triangle lines */
-    case 3: /* Draw noise pattern */
-  }
-}
-```
-
-**Why procedural?**
-
-- Minimal memory footprint
-- Scalable graphics
-- Educational: understanding pixel-level drawing
-
-**Display buffer:** 128×32 monochrome (512 bytes total)
+> **Note:** Noise waveform remains monophonic due to ESP32 `random()` mutex behavior.
 
 ---
 
-## 12. Code Annotations
+## 10. Timing Model (v4.0)
 
-### Button State Machine
-```cpp
-// Short press: Select mode
-// Long press (>800ms): Toggle mute
-if (reading == LOW && !buttonActive) {
-  buttonActive = true;
-  pressStartTime = millis();
-  longPressHandled = false;
-}
-```
+Unlike v3.8:
+- Audio is sample-accurate
+- Buffer refill is deterministic
+- UI jitter does not affect audio
+- No mid-period frequency jumps
 
-### Race Condition Protection
-```cpp
-int currentPos;
-noInterrupts();                    // Enter critical section
-currentPos = virtualPosition;      // Read ISR variable safely
-interrupts();                      // Exit critical section
-```
-
-**Why this is necessary:**
-
-Without atomic access, the main loop could read `virtualPosition` while the ISR is writing to it.
-
-### Display Throttling
-```cpp
-if (millis() - lastDisplayUpdate > 50) {  // 20 FPS cap
-  updateDisplay();
-  lastDisplayUpdate = millis();
-}
-```
-
-**Prevents:** I2C bus saturation and audio timing interference
+System is clock-locked to 44.1 kHz.
 
 ---
 
-## 13. Known Software Issues
+## 11. Known Software Limitations
 
-| Issue | Cause | Impact | Planned Fix |
-|-------|-------|--------|-------------|
-| Pitch quantization | Hysteresis threshold too high | ~15 Hz steps | Tune threshold or move to DAC |
-| No boot animation | Immediate start | User confusion | Add splash screen |
-| Encoder false steps | HW quality + SW debounce | Occasional skips | Better encoder hardware |
-| Frequency jumps | Race condition (rare) | Audio glitch | Atomic flag protection |
-| `millis()` in ISR | Overhead inside interrupt | None observable | Hardware timer in v4.0 |
+From MASTER_SOT Section 4.5:
+- Noise waveform mutex limitation
+- ADC jitter ±30–50 LSB (filtered)
+- Breadboard-induced signal integrity noise
+- Cross-core shared variables require `volatile`
 
----
-
-## 14. What's NOT Here
-
-To be explicit, v3.8 does **not** include:
-
-### Architecture
-- ❌ Object-oriented design
-- ❌ Class hierarchies
-- ❌ Polymorphism
-- ❌ Hardware abstraction layer (HAL)
-- ❌ Multiple source files
-- ❌ RTOS or threading
-
-### Audio
-- ❌ True waveform synthesis
-- ❌ I2S protocol
-- ❌ DAC output
-- ❌ ADSR envelopes
-- ❌ Digital filters (LPF/HPF/BPF)
-- ❌ Polyphony
-- ❌ Look-up tables
-
-### Optimization
-- ❌ Dual-core usage
-- ❌ DMA transfers
-- ❌ Fixed-point arithmetic
-- ❌ Sample-accurate timing
-
-These will be introduced gradually starting in v4.0.
+All documented. None hidden.
 
 ---
 
-## 15. What This Architecture Taught Me
+## 12. What’s NOT Here (Deliberately)
 
-Beyond the technical implementation:
+v4.0 does not include:
+- DSP filters
+- ADSR envelopes
+- LFO modulation
+- Sample playback
+- FFT analysis
+- Bare-metal audio (Teensy v5.0)
+- DMA interrupt callback model (v5.0)
 
-- **Abstractions hide timing problems** — PWM exposed audio physics brutally
-- **Global state is dangerous but educational** — Race conditions become visible
-- **Simplicity accelerates understanding** — No layers to debug through
-- **Debugging with a scope beats guessing** — Visual feedback is irreplaceable
-- **Order matters in embedded systems** — Function call sequence affects hardware behavior
-
-These lessons inform the v4.0 refactor.
-
----
-
-## 16. Next: v4.0 Software Refactor
-
-The next iteration focuses on **modularity and proper audio**, not features.
-
-| Aspect | v3.8 | v4.0 |
-|--------|------|------|
-| Files | 1 | 6+ |
-| Classes | 1 | 5+ |
-| Architecture | Procedural | OOP with HAL |
-| Audio | PWM direct | I2S abstraction |
-| Waveforms | Duty cycle tricks | True DDS synthesis |
-| Threading | Single-threaded | Possible dual-core usage (planned) |
-
-**Goal:** Separate concerns without losing transparency.
+v4.0 proves architecture.  
+v5.0 proves portability.
 
 ---
 
-## 17. Related Documentation
+## 13. Architectural Lessons
 
-- [Hardware Design](./hardware-design)
-- [Replication Status](./replication-status)
-- [Full Source Code](https://github.com/MatiDashkov07/portfolio_eduLAB/blob/main/src/main.cpp)
+- Real-time systems must have blocking yield points.
+- Display updates are dangerously slow.
+- Refactoring exposes hidden bugs.
+- OOP enables portability.
+- Audio must be clock-driven, not event-driven.
+- DSP code should be hardware-agnostic.
 
 ---
 
-## Closing
+## 14. Version History Reference
 
-This software architecture is not impressive by professional standards.
+For the monolithic PWM implementation:  
+→ See **Software Architecture — v3.8 (Transistor Era)**
 
-Its value lies in the embedded systems lessons it exposes.
+v4.0 is the first architecture that resembles a professional embedded audio system.
 
-Every limitation is intentional. Every choice is documented.
+---
 
-The refactor to OOP will happen **after** the fundamentals are understood.
+## 15. Next Step — v5.0 Migration
+
+Designed so that:
+- `Voice`
+- `WaveformGenerator`
+- `fillBuffer()`
+
+can be ported to Teensy 4.1 with minimal modification.
+
+**Only major rewrites required:**
+- I2S initialization
+- DMA callback model
+- Removal of FreeRTOS dependency
+
+---
+
+### Related Documentation
+- [Hardware Design](#) *(Add correct Docusaurus link here)*
+- [Replication Status](#) *(Add correct Docusaurus link here)*
+
+---
+
+### Closing
+
+> v3.8 proved that I could make sound.  
+> v4.0 proves that I understand how digital audio systems are architected.  
+> The code is no longer a toy.  
+> It is a foundation.

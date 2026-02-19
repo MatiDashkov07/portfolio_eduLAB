@@ -6,411 +6,213 @@ title: Hardware Design
 import PDFViewer from '@site/src/components/PDFViewer';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
-# Hardware Design — v3.8
+# Hardware Design — v4.0
 
-> Technical documentation of the current hardware implementation.
+> Technical documentation of the **current hardware implementation** (v4.0) — with v3.8 preserved as historical reference.
 
 ---
 
 ## 1. What This Page Documents
 
-This page describes the **v3.8 hardware implementation** as it exists now — not as planned, not idealized.
+This page describes the **v4.0 hardware implementation** as it exists now — not as planned, not idealized.
 
-This is a deliberately simple design. The goal is not high-fidelity audio. The goal is understanding transistor switching, inductive loads, and PWM-based signal generation before introducing DACs and abstraction layers.
+v4.0 is the version where eduLAB crossed the line from **PWM-era experimentation** into **real digital audio**:
+
+- **I2S audio transport**
+- **PCM5102A DAC**
+- **16-bit / 44.1 kHz stereo output**
+- Breadboard-level signal integrity problems that are real engineering (clock edges, ground noise, parasitics)
+
+:::info
+v3.8 is still documented here — but as **Version History**, not as “current state”.
+:::
 
 ---
 
 ## 2. Design Philosophy: Low-Level Physics First
 
-Before building a system with I2S DACs and op-amp output stages, I wanted to understand:
+Even in v4.0, the philosophy did not change:
 
-- How transistors switch inductive loads
-- What happens when a GPIO pin drives a load that draws too much current
-- Why inductors generate voltage spikes when current is interrupted
-- How PWM generates audio, and why it is fundamentally limited
+- Measure clocks, don’t assume them  
+- Treat wires as inductors and antennas (because they are)  
+- Treat breadboards as RF disasters (because they are)  
+- Build the simplest system that exposes the physics clearly  
 
-**v3.8 is intentionally primitive.**
-
-The audio quality is ~8-bit equivalent. There is no reconstruction filter. There is no op-amp buffer.
-
-These are not oversights — they are pedagogical choices.
+v4.0 is “Hi-Fi” relative to v3.8 — but it is still intentionally transparent, not polished.
 
 ---
 
-## 3. System Overview
+## 3. System Overview (v4.0)
 
-The signal flow in v3.8:
-```
-ESP32-S3 → PWM (GPIO 16) → 2N2222 Transistor → 8Ω Speaker
-    ↑
-Pots (ADC) + Encoder (Interrupt) + OLED (I2C)
-```
+The signal flow in v4.0:
+
+
+ESP32-S3 → I2S (BCK / LRCK / DIN) → PCM5102A DAC Module → 3.5mm Line Out
+↑
+Pots (ADC) + Encoder (GPIO) + OLED (I2C)
+
 
 **Power:** 5V USB → ESP32 onboard 3.3V regulator → logic and peripherals  
-**Audio:** PWM output → transistor driver → speaker (direct, no filter)  
-**UI:** OLED display + rotary encoder + 2× potentiometers
+**Audio:** I2S digital audio → DAC module → buffered line output  
+**UI:** OLED display + rotary encoder + potentiometer(s)
 
-![eduLAB v3.8 — Hardware System Overview](/img/projects/system-overview-flowchart-3.8v.svg)
+![eduLAB Closed-Loop Signal Flow](/img/projects/flowchart-intro-docs-file.png)
 
 ---
 
-## 4. The Complete Schematic
+## 4. The Complete Schematic (v4.0)
 
-Below is the full schematic for v3.8.
+
 
 <div style={{ marginBottom: '2rem' }}>
-  {/* הנגן */}
-  <PDFViewer fileUrl={useBaseUrl('/files/schematic-v3.8.pdf')} />
-
-  {/* טקסט קטן וממורכז להורדה */}
+  <PDFViewer fileUrl={useBaseUrl('/files/schematic-v4.0.pdf')} />
   <div style={{ textAlign: 'left', marginTop: '0.5rem', fontSize: '1rem' }}>
-    <a href={useBaseUrl('/files/schematic-v3.8.pdf')} download="schematic-v3.8.pdf">
+    <a href={useBaseUrl('/files/schematic-v4.0.pdf')} download="schematic-v4.0.pdf">
       Click here to download the full PDF
     </a>
   </div>
 </div>
 
-Let's break down each section.
-
 ---
 
-## 5. How to Read the Schematic
-
-The circuit is organized into functional blocks:
-
-1. **Power input** — USB 5V input and onboard 3.3V regulation  
-2. **MCU** — ESP32-S3 with all GPIO assignments  
-3. **Audio output** — PWM → transistor → speaker with flyback diode  
-4. **User interface** — OLED, rotary encoder, potentiometers  
-
-Start from the power rail, follow the signal through the MCU, then trace the audio output path.
-
----
-
-## 6. Power Supply
+## 5. Power Supply
 
 | Rail | Voltage | Source | Load |
 |------|---------|--------|------|
-| USB Input | 5V | USB-C | ESP32 dev board |
-| Logic Rail | 3.3V | ESP32 onboard LDO | MCU, OLED, encoder pull-ups |
-| Speaker Drive | 5V (switched) | Transistor collector | 8Ω speaker |
-
-**Notes:**
-
-- The ESP32 development board includes its own 3.3V LDO regulator
-- No separate analog power rail (not required for PWM output)
-- Ground is shared across all subsystems
-- Decoupling capacitors are present on the ESP32 dev board itself
-
-**What's NOT here:**
-
-- No external LDO regulators
-- No split analog/digital ground planes
-- No ±12V rails (planned for v4.0)
+| USB Input | 5V | USB-C | ESP32 dev board + DAC module |
+| Logic Rail | 3.3V | ESP32 onboard LDO | MCU, OLED, encoder, DAC logic pins |
+| Analog Out | Line-level | PCM5102A module buffer | 3.5mm output |
 
 ---
 
-## 7. The Microcontroller
+## 6. The Microcontroller
 
-**Part:** ESP32-S3-N16R8 (DevKitC development board)
-
-**Key Specifications:**
-
-- Dual-core Xtensa LX7 @ 240 MHz
-- 16 MB Flash, 8 MB PSRAM
-- LEDC peripheral for hardware PWM generation
-- Built-in I2C, SPI, ADC peripherals
-
-**Why ESP32-S3?**
-
-- Low cost and widely available
-- Dual-core architecture (UI and audio can be separated conceptually)
-- Hardware PWM generation without heavy CPU load
-- Strong ecosystem and documentation
-
-v3.8 does not exploit the dual-core architecture fully — this is intentional.
-
-**What's NOT here:**
-
-- Teensy 4.1 (planned for v4.0)
-- Custom PCB (v3.8 is breadboard-based)
+**Part:** ESP32-S3-N16R8  
+Dual-core @ 240 MHz
 
 ---
 
-## 8. Audio Output Stage — The Core Circuit
+## 7. Audio Output — I2S + PCM5102A
 
-This is where digital PWM becomes audible sound.
+### 7.1 I2S Signals
 
----
+**Protocol:** I2S  
+**Sample rate:** 44.1 kHz  
+**Bit depth:** 16-bit signed  
+**Channels:** Stereo (mono duplicated to L/R)
 
-### 8.1 PWM Generation
-
-**Source:** ESP32 LEDC peripheral  
-**Output pin:** GPIO 16  
-**Signal type:** Pulse Width Modulation (PWM)
-
-**Important:** This is **not** a DAC.  
-v3.8 does not use any DAC functionality — the audio signal is generated purely via PWM.
-
-PWM audio works by varying the duty cycle of a fixed-frequency square wave:
-
-- 0% duty cycle → minimum average voltage
-- 50% duty cycle → mid-level signal
-- 100% duty cycle → maximum average voltage
-
-The speaker's inductance and mechanical inertia together act as a crude low-pass filtering mechanism, converting the high-frequency switching waveform into audible sound.
-
-**Why PWM instead of a proper DAC?**
-
-Because PWM exposes:
-
-- Duty cycle effects on perceived timbre
-- Resolution limits (~8-bit effective)
-- Filtering requirements
-- Why dedicated DACs exist in real audio systems
-
-This limitation is **intentional**.
+| I2S Signal | ESP32 GPIO | Notes |
+|-------------|------------|------|
+| BCK | GPIO 39 | ~1.4112 MHz (Scope Verified) |
+| LRCK | GPIO 38 | 44.1 kHz (Scope Verified) |
+| DIN | GPIO 40 | Serial audio data |
 
 ---
 
-### 8.2 Transistor Driver
-
-![Transistor driver stage on breadboard — 2N2222 with base resistor](/img/projects/breadboard-schematic-final-v3.8.png)
+### I2S Timing Relationship
 
 
-**Part:** 2N2222A NPN transistor  
-**Configuration:** Common-emitter switch  
-**Base resistor:** 1 kΩ
+![I2S timing relationship](/img/projects/V4/i2s-transmission.jpg)
 
-**Why a transistor?**
 
-ESP32 GPIO pins are not designed to drive high-current loads directly.  
-While absolute maximum ratings may approach ~40 mA, safe operating current is significantly lower.
-
-The 8Ω speaker can draw far more current than a GPIO can safely supply. Driving it directly would:
-
-1. Cause voltage sag (measured: 3.3V → ~1.5V)
-2. Risk permanent MCU damage
-
-The 2N2222 acts as a current amplifier:
-
-- GPIO supplies ~3 mA base current
-- Transistor switches ~200 mA collector current
-- The speaker load is electrically isolated from the MCU
-
-**Base resistor calculation:**
-
-$$
-R = \frac{V_{\text{GPIO}} - V_{BE}}{I_{\text{base}}}
-$$
-
-$$
-R = \frac{3.3 - 0.7}{0.003} \approx 867 \, \Omega
-$$
-
-Nearest standard value: **1 kΩ**
+- LRCK toggles at the sample rate (44.1 kHz)  
+- BCK shifts individual bits (~1.4112 MHz)  
+- DATA is sampled on each BCK edge  
+- Each LRCK frame contains two 16-bit words  
 
 ---
 
-### 8.3 Inductive Load & Protection
+### 7.2 PCM5102A Module Configuration
 
-**The problem:** A speaker voice coil is an **inductor**.
+The PCM5102A is currently used as a module for rapid validation.
 
-When the transistor switches off, the current through the inductor cannot stop instantly. The inductor resists the change, generating a reverse voltage spike:
+#### Strapping Pins (Hardware Mode Selection)
 
-$$
-V = -L \cdot \frac{di}{dt}
-$$
+| Pin  | Connection | Purpose |
+|------|------------|----------|
+| FLT  | GND        | Normal latency filter |
+| FMT  | GND        | Standard I2S format |
+| SCK  | GND        | Internal clock mode (no external MCLK) |
+| XSMT | 3.3V       | Soft-mute disabled |
 
-Measured spike: approximately **−400 mV** below ground (oscilloscope verified).
+Without proper strapping:
 
-This exceeds safe GPIO limits and could damage the MCU.
+- The DAC may default to wrong format  
+- Output may remain muted  
+- Framing may not align with ESP32  
 
-**The solution:** A 1N4007 flyback diode
-
-- Connected anti-parallel to the speaker  
-  (cathode to +5V, anode to transistor collector)
-- When the transistor turns off, the diode conducts
-- Stored energy dissipates safely
-- Voltage is clamped to approximately −0.7 V
-
-![Inductive kickback clamped with flyback diode — oscilloscope measurement](/img/projects/kickback-scope-trace.jpg)
-*Measured collector voltage during PWM switching with flyback diode installed.*
-
-**Read more:**  
-[Saved by Physics: Analyzing Inductive Kickback](/blog/inductive-kickback-analysis)
+v4.0 runs the DAC in self-clocked mode for breadboard simplicity.
 
 ---
 
-### 8.4 The Load: Speaker
+## 8. User Interface Hardware
 
-**Part:** 8Ω passive speaker (replaced the original piezo buzzer)
+### Potentiometer Jitter (Measured)
 
-**Why a speaker instead of a buzzer?**
+Raw ESP32 ADC readings fluctuate approximately:
 
-- Buzzers have fixed resonance and limited frequency response
-- Speakers reveal frequency response, distortion, and noise clearly
+**±30–50 LSB** on breadboard.
 
-**Volume control:** Series potentiometer (P3)
+Mitigation:
 
-**Known issue:** This creates an impedance mismatch. Volume control is non-linear and affects tone quality.
-
-This will be replaced by a proper op-amp attenuator in v4.0.
-
----
-
-## 9. User Interface Hardware
-
----
-
-![eduLAB v3.8 user interface — OLED, rotary encoder, and potentiometers](/img/projects/UI-v3.8-showcase.jpg)
-
-
-### 9.1 Display
-
-**Part:** 0.91" OLED (SSD1306)  
-**Resolution:** 128×32  
-**Interface:** I2C (SDA: GPIO 4, SCL: GPIO 5)  
-**Address:** 0x3C
-
-**Why I2C?**
-
-- Only two signal lines
-- Simple protocol
-- Broad library support
-
-The OLED displays waveform mode, frequency, and menu feedback.
-
----
-
-### 9.2 Analog Input Controls
-
-**Parts:** 2× RV09 10 kΩ linear potentiometers
-
-| Pot | GPIO | Function |
-|-----|------|----------|
-| P1 | GPIO 1 (ADC) | Pitch control |
-| P2 | GPIO 2 (ADC) | Duty cycle / waveform shape |
-
-**Why analog potentiometers?**
-
-- Direct tactile control
-- No debouncing required
-- Exposes ADC noise as a learning opportunity
-
-**ADC noise issue:**
-
-Raw ADC readings showed ±50 LSB jitter, causing audible instability.
-
-**Mitigation (software):**
-
-- Exponential Moving Average ($\alpha = 0.15$)
+- Exponential Moving Average (α = 0.15)  
 - Hysteresis threshold (40 LSB)
 
-Responsiveness is intentionally traded for stability.
+This is measured electrical noise — not a software bug.
 
 ---
 
-### 9.3 Rotary Encoder
+## 9. Known Hardware Issues
 
-**Part:** HW-040 (EC11-based)  
-**Pins:** CLK (GPIO 6), DT (GPIO 7), SW (GPIO 15)  
-**Method:** Interrupt-driven (DT falling edge)
-
-**Why interrupts?**
-
-Polling can miss steps during other processing. Interrupts guarantee detection.
-
-**Known issue:** Low mechanical quality causes missed or false steps.
-
-**Planned fix:** Replace with higher-quality encoder in future revisions.
+| Issue | Cause | Impact | Fix |
+|-------|-------|--------|-----|
+| Power rail noise | Shared rails | Hiss | PCB design |
+| I2S edge distortion | Parasitic L/C | Overshoot | PCB routing |
+| Pot jitter | ±30–50 LSB ADC noise | Frequency jumps | EMA + hysteresis |
+| Encoder quality | Mechanical tolerance | Missed steps | Higher quality encoder |
 
 ---
 
-## 10. Pin Assignment Table
+## 10. What’s NOT Here (v4.0)
 
-| GPIO | Function | Component | Direction |
-|------|----------|-----------|-----------|
-| 1 | ADC | Potentiometer (Pitch) | Input |
-| 2 | ADC | Potentiometer (Duty) | Input |
-| 4 | I2C SDA | OLED Display | Bidirectional |
-| 5 | I2C SCL | OLED Display | Output |
-| 6 | Encoder CLK | Rotary Encoder | Input |
-| 7 | Encoder DT | Rotary Encoder | Input (interrupt) |
-| 15 | Encoder SW | Encoder Button | Input |
-| 16 | PWM | Audio Output | Output |
+### Analog Sandbox (Future Architecture)
 
----
+v4.0 validates the **digital core**.
 
-## 11. Known Hardware Issues
+Future versions expand into a **user-accessible analog sandbox**:
 
-These are not bugs — they are documented learning points:
+- Op-amp buffer stages  
+- Reconstruction filters  
+- Breadboard analog experimentation zone  
+- Signal routing and measurement nodes  
 
-| Issue | Cause | Impact | Planned Fix |
-|-------|-------|--------|-------------|
-| Pitch quantization | Aggressive hysteresis | ~15 Hz minimum step | Reduce threshold or use DAC |
-| Encoder quality | Low mechanical tolerance | Missed steps | Higher-quality encoder |
-| Volume non-linearity | Series pot impedance mismatch | Tone affected | Op-amp attenuator |
-| Power rail noise | Shared supply | Audible hiss | Filtering in v4.0 |
-| Lo-fi audio | PWM resolution | ~8-bit quality | I2S DAC in v4.0 |
+The goal is not to hide analog complexity inside a DAC module.
 
-These limitations are intentionally tolerated in v3.8 due to the absence of a true analog signal path.
+The goal is to expose it.
 
 ---
 
-## 12. What's NOT Here
+## 11. Version History — v3.8
 
-To be explicit, v3.8 does **not** include:
+PWM → 2N2222 → 8Ω Speaker
 
-### Audio
-- ❌ DAC
-- ❌ Reconstruction filter
-- ❌ Op-amp buffer
-- ❌ Line-level output jack
+v3.8 taught:
 
-### Power
-- ❌ External regulators
-- ❌ Split analog/digital rails
-- ❌ ±12V supply
+- GPIO current limits  
+- Inductive kickback  
+- PWM limitations  
+- Power rail noise realities  
 
-### Controls
-- ❌ Multiple encoders
-- ❌ Faders
-- ❌ VU meters
-- ❌ Additional displays
-
-These will be introduced gradually starting in v4.0.
-
----
-
-## 13. Next: v4.0 Hardware Upgrade
-
-The next iteration focuses on **signal integrity**, not features.
-
-| Subsystem | v3.8 | v4.0 |
-|-----------|------|------|
-| Audio protocol | PWM | I2S |
-| Output stage | Transistor → Speaker | DAC → Op-amp |
-| DAC | None | PCM5102A |
-| Audio quality | ~8-bit | 16-bit / 44.1 kHz |
-
-**Status:** Components ordered.  
-**Target:** ~6 weeks.
-
----
-
-## 14. Related Documentation
-
-- [Software Architecture](./software-architecture)
-- [Build Guide](./replication-status)
-- [Inductive Kickback Analysis](/blog/inductive-kickback-analysis)
+It is the foundation — not the flagship.
 
 ---
 
 ## Closing
 
-This hardware design is not impressive by Hi-Fi standards.
+v4.0 is still a breadboard prototype.
 
-Its value lies in the engineering lessons it exposes.
+But it is now **real DSP hardware**.
 
-Every limitation is intentional. Every choice is documented.
+Every limitation is measurable.  
+Every decision is documented.  
+Nothing is a black box.
