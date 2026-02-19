@@ -13,213 +13,268 @@ slug: /edulab-synthesis-engine/intro
 
 ## What Is This?
 
-eduLAB is an embedded audio workstation built as a **learning tool**, not a product.  
-Its purpose is to take abstract DSP concepts and force them to survive contact with real hardware.
+eduLAB is an embedded DSP education platform — not a product, not a synthesizer, and not a consumer device.
 
-Instead of treating signals as numbers on a screen, eduLAB treats them as voltages you can probe, distort, filter, and analyze. Every part of the signal chain — from waveform generation to analog output — is intentionally exposed.
+Its purpose is to take abstract signal-processing theory and force it to survive contact with real hardware.
 
-![eduLAB v3.8 breadboard prototype — ESP32 driving a speaker via transistor stage](/img/projects/edulab-v3.8-overview.jpg)
+Instead of treating signals as numbers inside software, eduLAB treats them as voltages you can:
 
-*Current eduLAB v3.8 setup — a working breadboard prototype focused on transistor switching, PWM audio, and real measurements.*
+- Generate digitally  
+- Convert to analog  
+- Physically manipulate on breadboards  
+- Measure with instruments  
+- Break  
+- Fix  
+- Understand  
 
+Every stage of the signal chain is intentionally exposed.
 
 ---
 
 ## Why I Built This
 
-I started this project out of genuine curiosity for how signals behave in the real world — not just in theory, and not just in software.
+I built eduLAB out of curiosity for how signals behave in the real world.
 
-While researching career paths in electrical engineering in Israel, I became aware that many early opportunities are influenced by military background. I was waitlisted for Unit 8200. That fact shaped my perspective, but it is **not** the motivation behind this project.
+Not just in equations.  
+Not just inside IDEs.  
+But on oscilloscopes.
 
-The real motivation is much simpler: I enjoy hardware. I enjoy understanding why circuits behave the way they do. I enjoy debugging things that don't work.
+While researching electrical engineering career paths in Israel, I realized something important: credentials open doors — but depth builds engineers.
 
-What I *did* take from that reality is a useful constraint: if I'm going to invest years into engineering, I want my work to demonstrate **depth**, not credentials. That means:
+I was waitlisted for Unit 8200. That shaped my perspective, but it is not the motivation behind this project.
 
-- Designing circuits from first principles  
-- Measuring real signals instead of trusting assumptions  
+The real motivation is simpler:
+
+- I enjoy hardware.  
+- I enjoy debugging.  
+- I enjoy understanding why things fail.  
+
+If I’m going to invest years into engineering, I want the work to demonstrate depth — not familiarity with libraries.
+
+That means:
+
+- Designing from first principles  
+- Measuring everything  
 - Documenting failures as carefully as successes  
 
-This project grew naturally from that mindset.
+eduLAB grew naturally from that mindset.
 
 ---
 
 ## The Philosophy: No Black Boxes
 
-I explicitly avoid what I call *"Vibe Engineering"* — making things work without understanding why they work.
+I explicitly avoid what I call *“Vibe Engineering”* — making things work without understanding why they work.
 
-The guiding rule is simple:
+The rule is simple:
 
-> **If I can't explain it, I don't use it.**
+> **If I can’t explain it, I don’t use it.**
 
-Before connecting any component, I expect to answer questions like:
+Before connecting any component, I ask:
 
 - What physical effect am I relying on?
 - What assumptions am I making?
-- What happens if those assumptions are wrong?
+- What breaks if I’m wrong?
 
-If I can't answer — I stop and learn first.
+If I can’t answer — I stop and learn first.
 
 ---
 
 ## The Big Idea
 
-eduLAB is a **physical learning instrument**.
+eduLAB is a **physical DSP learning instrument**.
 
 It is not:
+
 - A commercial audio product  
 - A performance synthesizer  
 - A polished consumer device  
 
-It *is*:
+It is:
+
 - An engineering education platform  
-- A sandbox for DSP and analog experimentation  
+- A DSP and analog experimentation sandbox  
 - A system where digital signals are intentionally routed through user-built analog circuits  
 
-The goal is not convenience — it's understanding.
+The goal is not convenience.  
+The goal is understanding.
 
 ---
 
 ## The DSP Education Sandbox
 
-**Important clarification:** eduLAB is not "a synthesizer with extras".
+**Important clarification:** eduLAB is not “a synthesizer with extras.”
 
-It is a **DSP Education Sandbox** designed to demonstrate:
+It is a **closed-loop learning system**:
 
-- Digital waveform generation  
-- Analog filtering and amplification  
-- Noise behavior and mitigation  
-- Real-time signal analysis  
+1. Generate a signal digitally.
+2. Convert it to analog.
+3. Modify it using physical circuits.
+4. Measure what actually happened.
 
-### Signal Flow Architecture
+That feedback loop is the core of the project.
 
-Digital signals are generated in firmware, converted to analog form, physically modified using breadboard circuits, and then measured again.  
-That closed loop is the core of the project.
-
-![eduLAB Signal Flow](/img/projects/flowchart-intro-docs-file.svg)
-<!-- [PLACEHOLDER: Signal Flow Diagram from SOT — ASCII art or generated diagram] -->
+![eduLAB Signal Flow](/img/projects/flowchart-intro-docs-file.png)
 
 ---
 
-## Vision Preview
+# Current State — v4.0: The Hi-Fi Leap
 
-The long-term goal is a **bench-top DSP education workstation** — something you would expect to see in a university lab rather than a music studio.
+v4.0 marks the transition from PWM-based experimentation to true digital signal processing.
 
-A tool designed to answer one question clearly:
+This is no longer “fake DSP through duty cycle tricks.”  
+This is real I2S audio, real phase accumulation synthesis, and real architecture.
+
+### Hardware Core
+
+| Component | Implementation |
+|-----------|---------------|
+| MCU | ESP32-S3-N16R8 (Dual-core @ 240 MHz) |
+| Audio Protocol | I2S |
+| DAC | PCM5102A |
+| Audio Quality | 16-bit / 44.1 kHz stereo |
+| Output | Line-level via DAC module |
+| Display | 0.91” OLED (SSD1306) |
+| Inputs | 2× potentiometers + rotary encoder + button |
+
+I2S clocks were scope-verified:
+- **LRCK:** 44.1 kHz  
+- **BCK:** 1.4112 MHz  
+
+This version generates mathematically correct waveforms using a phase accumulator:
+
+
+phase += 2π × frequency / sampleRate
+
+
+Waveforms implemented:
+
+- Sine  
+- Triangle  
+- Square  
+- Sawtooth  
+- Noise  
+
+---
+
+### Software Architecture
+
+v4.0 replaced a 450-line monolithic file with a clean multi-file OOP architecture.
+
+Core concepts:
+
+- **WaveformGenerator (polymorphic hierarchy)**
+- **Voice class (independent oscillator units)**
+- **AudioEngine (I2S + mixer + DMA buffer)**
+- **StateMachine (UI control flow)**
+- **Dual-core separation (Core 0 = audio, Core 1 = UI)**
+
+Real-time audio runs independently from display updates, eliminating buffer underruns and clicks.
+
+Polyphony proof-of-concept:
+- 4-voice engine
+- 3-voice chord demonstration
+- Software mixer with clipping prevention
+
+This is the first version that qualifies as actual DSP work.
+
+---
+
+### What v4.0 Achieved
+
+- Clean 16-bit audio output via I2S  
+- Logarithmic frequency mapping for perceptual control  
+- Phase-accurate waveform synthesis  
+- Software polyphony  
+- Real-time dual-core architecture  
+- Measured and debugged clock integrity  
+
+v4.0 is stable and fully operational.
+
+---
+
+# Version History — v3.8: The Transistor Era
+
+Before v4.0, the project focused on fundamentals.
+
+v3.8 used:
+
+
+PWM → 2N2222 transistor → 8Ω speaker
+
+
+It was intentionally primitive.
+
+That version existed to understand:
+
+- Transistor switching
+- Inductive kickback
+- PWM resolution limits
+- ADC noise and filtering
+- Why DACs exist in the first place
+
+It was not meant to be impressive.  
+It was meant to build intuition.
+
+Those lessons made v4.0 possible.
+
+---
+
+# Next Step — v5.0: The Platform Leap
+
+The next phase is migration from ESP32 to **Teensy 4.1 (ARM Cortex-M7 @ 600 MHz)**.
+
+Objective:
+
+- Preserve the OOP DSP architecture  
+- Port the audio engine  
+- Implement I2S + DMA natively  
+- Exploit hardware FPU  
+- Introduce MCLK for lower jitter  
+
+v5.0 does **not** add features.
+
+It proves that the architecture is portable and scalable.
+
+---
+
+# The Grand Vision
+
+The long-term target is a bench-top DSP education workstation with:
+
+| Component | Target |
+|-----------|--------|
+| Processor | Teensy 4.1 |
+| Audio | 16-bit / 44.1 kHz stereo |
+| Displays | Dual TFT |
+| Controls | Encoders, faders, switches |
+| Analog Lab | Breadboards with ±12V rails |
+| Measurement | Built-in oscilloscope + analysis |
+
+A tool designed to answer one clear question:
 
 > What actually happens to a signal when I change this?
 
 ---
 
-## Current State — v3.8: The Transistor Era
+## Project Status
 
-**Design focus:** understanding transistor switching, inductive loads, and PWM-based audio *before* introducing DACs and abstraction layers.
-
-This version is intentionally primitive.  
-The objective is not sound quality — it's insight.
-
-### Hardware Overview
-
-| Component | Specification | Status |
-|----------|---------------|--------|
-| MCU | ESP32-S3-N16R8 | In use |
-| Audio Output | PWM → 2N2222 → 8Ω speaker | Scope verified |
-| Audio Quality | ~8-bit equivalent | Intentional |
-| Display | 0.91" OLED (SSD1306) | In use |
-| Inputs | 2× potentiometers, 1× encoder | In use |
-| Waveforms | Square, saw, triangle, noise | Code verified |
-
-PWM audio exposes:
-- Duty cycle vs. perceived timbre  
-- Resolution limits  
-- Filtering requirements  
-- Why proper DACs exist  
-
-![eduLAB v3.8 output stage — transistor, flyback diode, and speaker](/img/projects/v3.8-breadboard.jpg)
-<!-- [PLACEHOLDER: v3.8 breadboard photo — real hardware build] -->
-
-### Software Architecture
-
-- **Language:** C++17 (Arduino framework)
-- **Structure:** Single-file, procedural
-- **UI:** Finite state machine
-- **Input handling:** Interrupt-driven encoder
-- **ADC stability:** EMA filtering with hysteresis
-
-Modularity comes later. First, the fundamentals.
-
-### Engineering Lessons Learned
-
-Problems solved through measurement and reasoning:
-
-- **GPIO current collapse** and load driving limits  
-- **Inductive kickback** observed and clamped  
-- **PWM timer conflicts** discovered via oscilloscope  
-- **ADC noise** filtered with explicit trade-offs  
-
-Detailed write-ups are available on the blog.
-
-![Oscilloscope capture showing inductive kickback before flyback clamping](/img/projects/kickback-scope-trace.jpg)
-
-*Current eduLAB v3.8 setup — a working breadboard prototype focused on transistor switching, PWM audio, and real measurements.*
-
----
-
-## Next Step — v4.0: The Hi-Fi Leap
-
-The next iteration focuses on **signal integrity**, not features.
-
-Planned changes include:
-
-- I2S audio output  
-- PCM5102A DAC  
-- Op-amp buffered line output  
-- True mathematical waveform synthesis  
-- Full OOP refactor  
-
-This is a technical evolution, not a redesign.
-
-<!-- [PLACEHOLDER: v3.8 vs v4.0 comparison table] -->
-
----
-
-## The Grand Vision
-
-The final form of eduLAB will be a complete DSP learning platform:
-
-| Component | Target |
+| Version | Status |
 |----------|--------|
-| Processor | Teensy 4.1 (ARM Cortex-M7 @ 600 MHz) |
-| Audio | 16-bit / 44.1 kHz stereo I2S |
-| Displays | 2× TFT LCD |
-| Controls | Encoders, faders, switches |
-| Analog Section | Breadboards with ±12 V rails |
-| Measurement | Built-in signal analysis |
+| v4.0 | ✅ Complete |
+| v5.0 | 🔄 Planned (Platform migration) |
+| v6.0+ | 📋 UI & Lab Expansion |
 
-![eduLAB concept visualization — future DSP education workstation](/img/projects/AI-mockup-eduLAB-final-vision.png)
-
-*Concept visualization — target long-term vision. Current version (v3.8) is a working breadboard prototype focused on fundamentals.*
-
+**Last updated:** February 2026
 
 ---
 
-## Project Status & Documentation
+## Explore Further
 
-| Version | Status | Notes |
-|--------|--------|------|
-| v3.8 | ✅ Stable | Breadboard prototype |
-| v4.0 | 🔄 In progress | Components ordered |
-| v5.0+ | 📋 Planned | Full workstation |
+- [Hardware Design](./hardware-design)
+- [Software Architecture](./software-architecture)
+- [Replication Status](./replication-status)
 
-**Last updated:** January 2026
-
-### Explore Further
-
-- [Hardware Design](./hardware-design) — Schematics, circuit analysis, power supply design
-- [Software Architecture](./software-architecture) — Code structure, DSP algorithms, OOP refactor
-- [Build Guide](./replication-status) — Replicate v3.8, component selection
-
-For debugging stories and design decisions, see the  
-[blog posts tagged edulab-synthesis-engine](/blog/tags/edulab-synthesis-engine).
+For detailed debugging stories and technical deep-dives, see the blog posts tagged `edulab-synthesis-engine`.
 
 ---
 
@@ -227,5 +282,5 @@ For debugging stories and design decisions, see the
 
 > *From breadboard tinkerer to hardware designer.*
 
-This project exists because I enjoy understanding how things work — deeply, physically, and honestly.  
-Everything else is secondary.
+eduLAB exists because understanding is more satisfying than imitation.
+
