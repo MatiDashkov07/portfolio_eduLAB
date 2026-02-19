@@ -12,7 +12,7 @@
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous"><link rel="stylesheet" href="/portfolio_eduLAB/assets/css/styles.42e26dab.css">
-<script src="/portfolio_eduLAB/assets/js/runtime~main.ecca8b4c.js" defer="defer"></script>
+<script src="/portfolio_eduLAB/assets/js/runtime~main.8c8bdc72.js" defer="defer"></script>
 <script src="/portfolio_eduLAB/assets/js/main.4f67200b.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -25,145 +25,191 @@
 </blockquote>
 <hr>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="what-is-this">What Is This?<a href="#what-is-this" class="hash-link" aria-label="Direct link to What Is This?" title="Direct link to What Is This?" translate="no">​</a></h2>
-<p>eduLAB is an embedded audio workstation built as a <strong>learning tool</strong>, not a product.<br>
-<!-- -->Its purpose is to take abstract DSP concepts and force them to survive contact with real hardware.</p>
-<p>Instead of treating signals as numbers on a screen, eduLAB treats them as voltages you can probe, distort, filter, and analyze. Every part of the signal chain — from waveform generation to analog output — is intentionally exposed.</p>
-<p><img decoding="async" loading="lazy" alt="eduLAB v3.8 breadboard prototype — ESP32 driving a speaker via transistor stage" src="/portfolio_eduLAB/assets/images/edulab-v3.8-overview-c49bb4e44c67d297ca5388bd19f6b1c7.jpg" width="4096" height="3072" class="img_ev3q"></p>
-<p><em>Current eduLAB v3.8 setup — a working breadboard prototype focused on transistor switching, PWM audio, and real measurements.</em></p>
+<p>eduLAB is an embedded DSP education platform — not a product, not a synthesizer, and not a consumer device.</p>
+<p>Its purpose is to take abstract signal-processing theory and force it to survive contact with real hardware.</p>
+<p>Instead of treating signals as numbers inside software, eduLAB treats them as voltages you can:</p>
+<ul>
+<li class="">Generate digitally</li>
+<li class="">Convert to analog</li>
+<li class="">Physically manipulate on breadboards</li>
+<li class="">Measure with instruments</li>
+<li class="">Break</li>
+<li class="">Fix</li>
+<li class="">Understand</li>
+</ul>
+<p>Every stage of the signal chain is intentionally exposed.</p>
 <hr>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="why-i-built-this">Why I Built This<a href="#why-i-built-this" class="hash-link" aria-label="Direct link to Why I Built This" title="Direct link to Why I Built This" translate="no">​</a></h2>
-<p>I started this project out of genuine curiosity for how signals behave in the real world — not just in theory, and not just in software.</p>
-<p>While researching career paths in electrical engineering in Israel, I became aware that many early opportunities are influenced by military background. I was waitlisted for Unit 8200. That fact shaped my perspective, but it is <strong>not</strong> the motivation behind this project.</p>
-<p>The real motivation is much simpler: I enjoy hardware. I enjoy understanding why circuits behave the way they do. I enjoy debugging things that don&#x27;t work.</p>
-<p>What I <em>did</em> take from that reality is a useful constraint: if I&#x27;m going to invest years into engineering, I want my work to demonstrate <strong>depth</strong>, not credentials. That means:</p>
+<p>I built eduLAB out of curiosity for how signals behave in the real world.</p>
+<p>Not just in equations.<br>
+<!-- -->Not just inside IDEs.<br>
+<!-- -->But on oscilloscopes.</p>
+<p>While researching electrical engineering career paths in Israel, I realized something important: credentials open doors — but depth builds engineers.</p>
+<p>I was waitlisted for Unit 8200. That shaped my perspective, but it is not the motivation behind this project.</p>
+<p>The real motivation is simpler:</p>
 <ul>
-<li class="">Designing circuits from first principles</li>
-<li class="">Measuring real signals instead of trusting assumptions</li>
+<li class="">I enjoy hardware.</li>
+<li class="">I enjoy debugging.</li>
+<li class="">I enjoy understanding why things fail.</li>
+</ul>
+<p>If I’m going to invest years into engineering, I want the work to demonstrate depth — not familiarity with libraries.</p>
+<p>That means:</p>
+<ul>
+<li class="">Designing from first principles</li>
+<li class="">Measuring everything</li>
 <li class="">Documenting failures as carefully as successes</li>
 </ul>
-<p>This project grew naturally from that mindset.</p>
+<p>eduLAB grew naturally from that mindset.</p>
 <hr>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-philosophy-no-black-boxes">The Philosophy: No Black Boxes<a href="#the-philosophy-no-black-boxes" class="hash-link" aria-label="Direct link to The Philosophy: No Black Boxes" title="Direct link to The Philosophy: No Black Boxes" translate="no">​</a></h2>
-<p>I explicitly avoid what I call <em>&quot;Vibe Engineering&quot;</em> — making things work without understanding why they work.</p>
-<p>The guiding rule is simple:</p>
+<p>I explicitly avoid what I call <em>“Vibe Engineering”</em> — making things work without understanding why they work.</p>
+<p>The rule is simple:</p>
 <blockquote>
-<p><strong>If I can&#x27;t explain it, I don&#x27;t use it.</strong></p>
+<p><strong>If I can’t explain it, I don’t use it.</strong></p>
 </blockquote>
-<p>Before connecting any component, I expect to answer questions like:</p>
+<p>Before connecting any component, I ask:</p>
 <ul>
 <li class="">What physical effect am I relying on?</li>
 <li class="">What assumptions am I making?</li>
-<li class="">What happens if those assumptions are wrong?</li>
+<li class="">What breaks if I’m wrong?</li>
 </ul>
-<p>If I can&#x27;t answer — I stop and learn first.</p>
+<p>If I can’t answer — I stop and learn first.</p>
 <hr>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-big-idea">The Big Idea<a href="#the-big-idea" class="hash-link" aria-label="Direct link to The Big Idea" title="Direct link to The Big Idea" translate="no">​</a></h2>
-<p>eduLAB is a <strong>physical learning instrument</strong>.</p>
+<p>eduLAB is a <strong>physical DSP learning instrument</strong>.</p>
 <p>It is not:</p>
 <ul>
 <li class="">A commercial audio product</li>
 <li class="">A performance synthesizer</li>
 <li class="">A polished consumer device</li>
 </ul>
-<p>It <em>is</em>:</p>
+<p>It is:</p>
 <ul>
 <li class="">An engineering education platform</li>
-<li class="">A sandbox for DSP and analog experimentation</li>
+<li class="">A DSP and analog experimentation sandbox</li>
 <li class="">A system where digital signals are intentionally routed through user-built analog circuits</li>
 </ul>
-<p>The goal is not convenience — it&#x27;s understanding.</p>
+<p>The goal is not convenience.<br>
+<!-- -->The goal is understanding.</p>
 <hr>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-dsp-education-sandbox">The DSP Education Sandbox<a href="#the-dsp-education-sandbox" class="hash-link" aria-label="Direct link to The DSP Education Sandbox" title="Direct link to The DSP Education Sandbox" translate="no">​</a></h2>
-<p><strong>Important clarification:</strong> eduLAB is not &quot;a synthesizer with extras&quot;.</p>
-<p>It is a <strong>DSP Education Sandbox</strong> designed to demonstrate:</p>
-<ul>
-<li class="">Digital waveform generation</li>
-<li class="">Analog filtering and amplification</li>
-<li class="">Noise behavior and mitigation</li>
-<li class="">Real-time signal analysis</li>
-</ul>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="signal-flow-architecture">Signal Flow Architecture<a href="#signal-flow-architecture" class="hash-link" aria-label="Direct link to Signal Flow Architecture" title="Direct link to Signal Flow Architecture" translate="no">​</a></h3>
-<p>Digital signals are generated in firmware, converted to analog form, physically modified using breadboard circuits, and then measured again.<br>
-<!-- -->That closed loop is the core of the project.</p>
-<p><img decoding="async" loading="lazy" alt="eduLAB Signal Flow" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSIzNjAiIHZpZXdCb3g9IjAgMCAxMjAwIDM2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgPGRlZnM+DQogICAgPHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+DQogICAgICA8cGF0aCBkPSJNIDIwIDAgTCAwIDAgMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1vcGFjaXR5PSIwLjA0Ii8+DQogICAgPC9wYXR0ZXJuPg0KDQogICAgPGZpbHRlciBpZD0ic2hhZG93IiB4PSItMTAlIiB5PSItMTAlIiB3aWR0aD0iMTIwJSIgaGVpZ2h0PSIxMjAlIj4NCiAgICAgIDxmZUdhdXNzaWFuQmx1ciBpbj0iU291cmNlQWxwaGEiIHN0ZERldmlhdGlvbj0iMyIvPg0KICAgICAgPGZlT2Zmc2V0IGR4PSIwIiBkeT0iMiIgcmVzdWx0PSJvZmZzZXRibHVyIi8+DQogICAgICA8ZmVDb21wb25lbnRUcmFuc2Zlcj4NCiAgICAgICAgPGZlRnVuY0EgdHlwZT0ibGluZWFyIiBzbG9wZT0iMC4xNSIvPg0KICAgICAgPC9mZUNvbXBvbmVudFRyYW5zZmVyPg0KICAgICAgPGZlTWVyZ2U+IA0KICAgICAgICA8ZmVNZXJnZU5vZGUvPg0KICAgICAgICA8ZmVNZXJnZU5vZGUgaW49IlNvdXJjZUdyYXBoaWMiLz4gDQogICAgICA8L2ZlTWVyZ2U+DQogICAgPC9maWx0ZXI+DQoNCiAgICA8bWFya2VyIGlkPSJhcnJvd2hlYWQiIG1hcmtlcldpZHRoPSIxMCIgbWFya2VySGVpZ2h0PSIxMCIgcmVmWD0iOSIgcmVmWT0iMyIgb3JpZW50PSJhdXRvIiBtYXJrZXJVbml0cz0ic3Ryb2tlV2lkdGgiPg0KICAgICAgPHBhdGggZD0iTTAsMCBMMCw2IEw5LDMgeiIgZmlsbD0iIzExMTExMSIvPg0KICAgIDwvbWFya2VyPg0KICA8L2RlZnM+DQoNCiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI0ZGRkZGRiIvPg0KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+DQoNCiAgPHN0eWxlPg0KICAgIC5ibG9jay1yZWN0IHsgZmlsbDogI0ZBRkFGQTsgc3Ryb2tlOiAjMkIyQjJCOyBzdHJva2Utd2lkdGg6IDIuNXB4OyBmaWx0ZXI6IHVybCgjc2hhZG93KTsgfQ0KICAgIC5hcnJvdy1saW5lIHsgc3Ryb2tlOiAjMTExMTExOyBzdHJva2Utd2lkdGg6IDRweDsgbWFya2VyLWVuZDogdXJsKCNhcnJvd2hlYWQpOyB9DQogICAgLnRleHQtaGVhZGVyIHsgZm9udC1mYW1pbHk6IHN5c3RlbS11aSwgLWFwcGxlLXN5c3RlbSwgU2Vnb2UgVUksIFJvYm90bywgQXJpYWwsIHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogMTFweDsgZm9udC13ZWlnaHQ6IDYwMDsgbGV0dGVyLXNwYWNpbmc6IDEuNXB4OyBmaWxsOiAjNEE0QTRBOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyB9DQogICAgLnRleHQtdGl0bGUgeyBmb250LWZhbWlseTogc3lzdGVtLXVpLCAtYXBwbGUtc3lzdGVtLCBTZWdvZSBVSSwgUm9ib3RvLCBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxOHB4OyBmb250LXdlaWdodDogNzAwOyBmaWxsOiAjMTExMTExOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyB9DQogICAgLnRleHQtc3VidGl0bGUgeyBmb250LWZhbWlseTogc3lzdGVtLXVpLCAtYXBwbGUtc3lzdGVtLCBTZWdvZSBVSSwgUm9ib3RvLCBBcmlhbCwgc2Fucy1zZXJpZjsgZm9udC1zaXplOiAxM3B4OyBmb250LXdlaWdodDogNDAwOyBmaWxsOiAjNEE0QTRBOyB0ZXh0LWFuY2hvcjogbWlkZGxlOyB9DQogICAgLnRleHQtY2FwdGlvbiB7IGZvbnQtZmFtaWx5OiBzeXN0ZW0tdWksIC1hcHBsZS1zeXN0ZW0sIFNlZ29lIFVJLCBSb2JvdG8sIEFyaWFsLCBzYW5zLXNlcmlmOyBmb250LXNpemU6IDE0cHg7IGZvbnQtd2VpZ2h0OiA1MDA7IGZpbGw6ICM1NTU1NTU7IHRleHQtYW5jaG9yOiBtaWRkbGU7IGZvbnQtc3R5bGU6IGl0YWxpYzsgfQ0KICA8L3N0eWxlPg0KDQogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMwLCAxMjApIj4NCiAgICA8cmVjdCB3aWR0aD0iMjQwIiBoZWlnaHQ9IjEyMCIgcng9IjE0IiBjbGFzcz0iYmxvY2stcmVjdCIvPg0KICAgIDx0ZXh0IHg9IjEyMCIgeT0iMzAiIGNsYXNzPSJ0ZXh0LWhlYWRlciI+RElHSVRBTDwvdGV4dD4NCiAgICA8dGV4dCB4PSIxMjAiIHk9IjY1IiBjbGFzcz0idGV4dC10aXRsZSI+U1lOVEhFU0lTPC90ZXh0Pg0KICAgIDx0ZXh0IHg9IjEyMCIgeT0iOTAiIGNsYXNzPSJ0ZXh0LXN1YnRpdGxlIj5XYXZlZm9ybSBnZW5lcmF0aW9uIGluIGZpcm13YXJlPC90ZXh0Pg0KICA8L2c+DQoNCiAgPGxpbmUgeDE9IjI3MCIgeTE9IjE4MCIgeDI9IjMyMCIgeTI9IjE4MCIgY2xhc3M9ImFycm93LWxpbmUiLz4NCg0KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMzAsIDEyMCkiPg0KICAgIDxyZWN0IHdpZHRoPSIyNDAiIGhlaWdodD0iMTIwIiByeD0iMTQiIGNsYXNzPSJibG9jay1yZWN0Ii8+DQogICAgPHRleHQgeD0iMTIwIiB5PSIzMCIgY2xhc3M9InRleHQtaGVhZGVyIj5DT05WRVJTSU9OPC90ZXh0Pg0KICAgIDx0ZXh0IHg9IjEyMCIgeT0iNjUiIGNsYXNzPSJ0ZXh0LXRpdGxlIj5QV00gLyBEQUM8L3RleHQ+DQogICAgPHRleHQgeD0iMTIwIiB5PSI5MCIgY2xhc3M9InRleHQtc3VidGl0bGUiPkRpZ2l0YWwgc2FtcGxlcyDihpIgYW5hbG9nIHZvbHRhZ2U8L3RleHQ+DQogIDwvZz4NCg0KICA8bGluZSB4MT0iNTcwIiB5MT0iMTgwIiB4Mj0iNjIwIiB5Mj0iMTgwIiBjbGFzcz0iYXJyb3ctbGluZSIvPg0KDQogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYzMCwgMTIwKSI+DQogICAgPHJlY3Qgd2lkdGg9IjI0MCIgaGVpZ2h0PSIxMjAiIHJ4PSIxNCIgY2xhc3M9ImJsb2NrLXJlY3QiLz4NCiAgICA8dGV4dCB4PSIxMjAiIHk9IjMwIiBjbGFzcz0idGV4dC1oZWFkZXIiPkFOQUxPRzwvdGV4dD4NCiAgICA8dGV4dCB4PSIxMjAiIHk9IjY1IiBjbGFzcz0idGV4dC10aXRsZSI+VVNFUiBDSVJDVUlUUzwvdGV4dD4NCiAgICA8dGV4dCB4PSIxMjAiIHk9IjkwIiBjbGFzcz0idGV4dC1zdWJ0aXRsZSI+RmlsdGVycywgZGlzdG9ydGlvbiwgYW1wbGlmaWNhdGlvbjwvdGV4dD4NCiAgPC9nPg0KDQogIDxsaW5lIHgxPSI4NzAiIHkxPSIxODAiIHgyPSI5MjAiIHkyPSIxODAiIGNsYXNzPSJhcnJvdy1saW5lIi8+DQoNCiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTMwLCAxMjApIj4NCiAgICA8cmVjdCB3aWR0aD0iMjQwIiBoZWlnaHQ9IjEyMCIgcng9IjE0IiBjbGFzcz0iYmxvY2stcmVjdCIvPg0KICAgIDx0ZXh0IHg9IjEyMCIgeT0iMzAiIGNsYXNzPSJ0ZXh0LWhlYWRlciI+TUVBU1VSRU1FTlQ8L3RleHQ+DQogICAgPHRleHQgeD0iMTIwIiB5PSI2NSIgY2xhc3M9InRleHQtdGl0bGUiPlNDT1BFIC8gQU5BTFlTSVM8L3RleHQ+DQogICAgPHRleHQgeD0iMTIwIiB5PSI5MCIgY2xhc3M9InRleHQtc3VidGl0bGUiPlByb2JlLCB2ZXJpZnksIGRlYnVnPC90ZXh0Pg0KICA8L2c+DQoNCiAgPHRleHQgeD0iNjAwIiB5PSIzMTAiIGNsYXNzPSJ0ZXh0LWNhcHRpb24iPkNsb3NlZC1sb29wIGxlYXJuaW5nOiBnZW5lcmF0ZSDihpIgY29udmVydCDihpIgbW9kaWZ5IOKGkiBtZWFzdXJlPC90ZXh0Pg0KDQo8L3N2Zz4=" width="1200" height="360" class="img_ev3q"></p>
+<p><strong>Important clarification:</strong> eduLAB is not “a synthesizer with extras.”</p>
+<p>It is a <strong>closed-loop learning system</strong>:</p>
+<ol>
+<li class="">Generate a signal digitally.</li>
+<li class="">Convert it to analog.</li>
+<li class="">Modify it using physical circuits.</li>
+<li class="">Measure what actually happened.</li>
+</ol>
+<p>That feedback loop is the core of the project.</p>
+<p><img decoding="async" loading="lazy" alt="eduLAB Signal Flow" src="/portfolio_eduLAB/assets/images/flowchart-intro-docs-file-dbec1ec27b0f60b6208bc94ce2f78d74.png" width="1536" height="1024" class="img_ev3q"></p>
 <hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="vision-preview">Vision Preview<a href="#vision-preview" class="hash-link" aria-label="Direct link to Vision Preview" title="Direct link to Vision Preview" translate="no">​</a></h2>
-<p>The long-term goal is a <strong>bench-top DSP education workstation</strong> — something you would expect to see in a university lab rather than a music studio.</p>
-<p>A tool designed to answer one question clearly:</p>
+<h1>Current State — v4.0: The Hi-Fi Leap</h1>
+<p>v4.0 marks the transition from PWM-based experimentation to true digital signal processing.</p>
+<p>This is no longer “fake DSP through duty cycle tricks.”<br>
+<!-- -->This is real I2S audio, real phase accumulation synthesis, and real architecture.</p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="hardware-core">Hardware Core<a href="#hardware-core" class="hash-link" aria-label="Direct link to Hardware Core" title="Direct link to Hardware Core" translate="no">​</a></h3>
+<table><thead><tr><th>Component</th><th>Implementation</th></tr></thead><tbody><tr><td>MCU</td><td>ESP32-S3-N16R8 (Dual-core @ 240 MHz)</td></tr><tr><td>Audio Protocol</td><td>I2S</td></tr><tr><td>DAC</td><td>PCM5102A</td></tr><tr><td>Audio Quality</td><td>16-bit / 44.1 kHz stereo</td></tr><tr><td>Output</td><td>Line-level via DAC module</td></tr><tr><td>Display</td><td>0.91” OLED (SSD1306)</td></tr><tr><td>Inputs</td><td>2× potentiometers + rotary encoder + button</td></tr></tbody></table>
+<p>I2S clocks were scope-verified:</p>
+<ul>
+<li class=""><strong>LRCK:</strong> 44.1 kHz</li>
+<li class=""><strong>BCK:</strong> 1.4112 MHz</li>
+</ul>
+<p>This version generates mathematically correct waveforms using a phase accumulator:</p>
+<p>phase += 2π × frequency / sampleRate</p>
+<p>Waveforms implemented:</p>
+<ul>
+<li class="">Sine</li>
+<li class="">Triangle</li>
+<li class="">Square</li>
+<li class="">Sawtooth</li>
+<li class="">Noise</li>
+</ul>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="software-architecture">Software Architecture<a href="#software-architecture" class="hash-link" aria-label="Direct link to Software Architecture" title="Direct link to Software Architecture" translate="no">​</a></h3>
+<p>v4.0 replaced a 450-line monolithic file with a clean multi-file OOP architecture.</p>
+<p>Core concepts:</p>
+<ul>
+<li class=""><strong>WaveformGenerator (polymorphic hierarchy)</strong></li>
+<li class=""><strong>Voice class (independent oscillator units)</strong></li>
+<li class=""><strong>AudioEngine (I2S + mixer + DMA buffer)</strong></li>
+<li class=""><strong>StateMachine (UI control flow)</strong></li>
+<li class=""><strong>Dual-core separation (Core 0 = audio, Core 1 = UI)</strong></li>
+</ul>
+<p>Real-time audio runs independently from display updates, eliminating buffer underruns and clicks.</p>
+<p>Polyphony proof-of-concept:</p>
+<ul>
+<li class="">4-voice engine</li>
+<li class="">3-voice chord demonstration</li>
+<li class="">Software mixer with clipping prevention</li>
+</ul>
+<p>This is the first version that qualifies as actual DSP work.</p>
+<hr>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="what-v40-achieved">What v4.0 Achieved<a href="#what-v40-achieved" class="hash-link" aria-label="Direct link to What v4.0 Achieved" title="Direct link to What v4.0 Achieved" translate="no">​</a></h3>
+<ul>
+<li class="">Clean 16-bit audio output via I2S</li>
+<li class="">Logarithmic frequency mapping for perceptual control</li>
+<li class="">Phase-accurate waveform synthesis</li>
+<li class="">Software polyphony</li>
+<li class="">Real-time dual-core architecture</li>
+<li class="">Measured and debugged clock integrity</li>
+</ul>
+<p>v4.0 is stable and fully operational.</p>
+<hr>
+<h1>Version History — v3.8: The Transistor Era</h1>
+<p>Before v4.0, the project focused on fundamentals.</p>
+<p>v3.8 used:</p>
+<p>PWM → 2N2222 transistor → 8Ω speaker</p>
+<p>It was intentionally primitive.</p>
+<p>That version existed to understand:</p>
+<ul>
+<li class="">Transistor switching</li>
+<li class="">Inductive kickback</li>
+<li class="">PWM resolution limits</li>
+<li class="">ADC noise and filtering</li>
+<li class="">Why DACs exist in the first place</li>
+</ul>
+<p>It was not meant to be impressive.<br>
+<!-- -->It was meant to build intuition.</p>
+<p>Those lessons made v4.0 possible.</p>
+<hr>
+<h1>Next Step — v5.0: The Platform Leap</h1>
+<p>The next phase is migration from ESP32 to <strong>Teensy 4.1 (ARM Cortex-M7 @ 600 MHz)</strong>.</p>
+<p>Objective:</p>
+<ul>
+<li class="">Preserve the OOP DSP architecture</li>
+<li class="">Port the audio engine</li>
+<li class="">Implement I2S + DMA natively</li>
+<li class="">Exploit hardware FPU</li>
+<li class="">Introduce MCLK for lower jitter</li>
+</ul>
+<p>v5.0 does <strong>not</strong> add features.</p>
+<p>It proves that the architecture is portable and scalable.</p>
+<hr>
+<h1>The Grand Vision</h1>
+<p>The long-term target is a bench-top DSP education workstation with:</p>
+<table><thead><tr><th>Component</th><th>Target</th></tr></thead><tbody><tr><td>Processor</td><td>Teensy 4.1</td></tr><tr><td>Audio</td><td>16-bit / 44.1 kHz stereo</td></tr><tr><td>Displays</td><td>Dual TFT</td></tr><tr><td>Controls</td><td>Encoders, faders, switches</td></tr><tr><td>Analog Lab</td><td>Breadboards with ±12V rails</td></tr><tr><td>Measurement</td><td>Built-in oscilloscope + analysis</td></tr></tbody></table>
+<p>A tool designed to answer one clear question:</p>
 <blockquote>
 <p>What actually happens to a signal when I change this?</p>
 </blockquote>
 <hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="current-state--v38-the-transistor-era">Current State — v3.8: The Transistor Era<a href="#current-state--v38-the-transistor-era" class="hash-link" aria-label="Direct link to Current State — v3.8: The Transistor Era" title="Direct link to Current State — v3.8: The Transistor Era" translate="no">​</a></h2>
-<p><strong>Design focus:</strong> understanding transistor switching, inductive loads, and PWM-based audio <em>before</em> introducing DACs and abstraction layers.</p>
-<p>This version is intentionally primitive.<br>
-<!-- -->The objective is not sound quality — it&#x27;s insight.</p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="hardware-overview">Hardware Overview<a href="#hardware-overview" class="hash-link" aria-label="Direct link to Hardware Overview" title="Direct link to Hardware Overview" translate="no">​</a></h3>
-<table><thead><tr><th>Component</th><th>Specification</th><th>Status</th></tr></thead><tbody><tr><td>MCU</td><td>ESP32-S3-N16R8</td><td>In use</td></tr><tr><td>Audio Output</td><td>PWM → 2N2222 → 8Ω speaker</td><td>Scope verified</td></tr><tr><td>Audio Quality</td><td>~8-bit equivalent</td><td>Intentional</td></tr><tr><td>Display</td><td>0.91&quot; OLED (SSD1306)</td><td>In use</td></tr><tr><td>Inputs</td><td>2× potentiometers, 1× encoder</td><td>In use</td></tr><tr><td>Waveforms</td><td>Square, saw, triangle, noise</td><td>Code verified</td></tr></tbody></table>
-<p>PWM audio exposes:</p>
-<ul>
-<li class="">Duty cycle vs. perceived timbre</li>
-<li class="">Resolution limits</li>
-<li class="">Filtering requirements</li>
-<li class="">Why proper DACs exist</li>
-</ul>
-<p><img decoding="async" loading="lazy" alt="eduLAB v3.8 output stage — transistor, flyback diode, and speaker" src="/portfolio_eduLAB/assets/images/v3.8-breadboard-ef6f7ae6ef75645ba58976005cea9c46.jpg" width="4096" height="3072" class="img_ev3q"></p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="software-architecture">Software Architecture<a href="#software-architecture" class="hash-link" aria-label="Direct link to Software Architecture" title="Direct link to Software Architecture" translate="no">​</a></h3>
-<ul>
-<li class=""><strong>Language:</strong> C++17 (Arduino framework)</li>
-<li class=""><strong>Structure:</strong> Single-file, procedural</li>
-<li class=""><strong>UI:</strong> Finite state machine</li>
-<li class=""><strong>Input handling:</strong> Interrupt-driven encoder</li>
-<li class=""><strong>ADC stability:</strong> EMA filtering with hysteresis</li>
-</ul>
-<p>Modularity comes later. First, the fundamentals.</p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="engineering-lessons-learned">Engineering Lessons Learned<a href="#engineering-lessons-learned" class="hash-link" aria-label="Direct link to Engineering Lessons Learned" title="Direct link to Engineering Lessons Learned" translate="no">​</a></h3>
-<p>Problems solved through measurement and reasoning:</p>
-<ul>
-<li class=""><strong>GPIO current collapse</strong> and load driving limits</li>
-<li class=""><strong>Inductive kickback</strong> observed and clamped</li>
-<li class=""><strong>PWM timer conflicts</strong> discovered via oscilloscope</li>
-<li class=""><strong>ADC noise</strong> filtered with explicit trade-offs</li>
-</ul>
-<p>Detailed write-ups are available on the blog.</p>
-<p><img decoding="async" loading="lazy" alt="Oscilloscope capture showing inductive kickback before flyback clamping" src="/portfolio_eduLAB/assets/images/kickback-scope-trace-04b7215d769b3cf9e9523d5ca20ce798.jpg" width="3072" height="4096" class="img_ev3q"></p>
-<p><em>Current eduLAB v3.8 setup — a working breadboard prototype focused on transistor switching, PWM audio, and real measurements.</em></p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="project-status">Project Status<a href="#project-status" class="hash-link" aria-label="Direct link to Project Status" title="Direct link to Project Status" translate="no">​</a></h2>
+<table><thead><tr><th>Version</th><th>Status</th></tr></thead><tbody><tr><td>v4.0</td><td>✅ Complete</td></tr><tr><td>v5.0</td><td>🔄 Planned (Platform migration)</td></tr><tr><td>v6.0+</td><td>📋 UI &amp; Lab Expansion</td></tr></tbody></table>
+<p><strong>Last updated:</strong> February 2026</p>
 <hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="next-step--v40-the-hi-fi-leap">Next Step — v4.0: The Hi-Fi Leap<a href="#next-step--v40-the-hi-fi-leap" class="hash-link" aria-label="Direct link to Next Step — v4.0: The Hi-Fi Leap" title="Direct link to Next Step — v4.0: The Hi-Fi Leap" translate="no">​</a></h2>
-<p>The next iteration focuses on <strong>signal integrity</strong>, not features.</p>
-<p>Planned changes include:</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="explore-further">Explore Further<a href="#explore-further" class="hash-link" aria-label="Direct link to Explore Further" title="Direct link to Explore Further" translate="no">​</a></h2>
 <ul>
-<li class="">I2S audio output</li>
-<li class="">PCM5102A DAC</li>
-<li class="">Op-amp buffered line output</li>
-<li class="">True mathematical waveform synthesis</li>
-<li class="">Full OOP refactor</li>
+<li class=""><a class="" href="/portfolio_eduLAB/projects/edulab-synthesis-engine/hardware-design">Hardware Design</a></li>
+<li class=""><a class="" href="/portfolio_eduLAB/projects/edulab-synthesis-engine/software-architecture">Software Architecture</a></li>
+<li class=""><a class="" href="/portfolio_eduLAB/projects/edulab-synthesis-engine/replication-status">Replication Status</a></li>
 </ul>
-<p>This is a technical evolution, not a redesign.</p>
-<hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-grand-vision">The Grand Vision<a href="#the-grand-vision" class="hash-link" aria-label="Direct link to The Grand Vision" title="Direct link to The Grand Vision" translate="no">​</a></h2>
-<p>The final form of eduLAB will be a complete DSP learning platform:</p>
-<table><thead><tr><th>Component</th><th>Target</th></tr></thead><tbody><tr><td>Processor</td><td>Teensy 4.1 (ARM Cortex-M7 @ 600 MHz)</td></tr><tr><td>Audio</td><td>16-bit / 44.1 kHz stereo I2S</td></tr><tr><td>Displays</td><td>2× TFT LCD</td></tr><tr><td>Controls</td><td>Encoders, faders, switches</td></tr><tr><td>Analog Section</td><td>Breadboards with ±12 V rails</td></tr><tr><td>Measurement</td><td>Built-in signal analysis</td></tr></tbody></table>
-<p><img decoding="async" loading="lazy" alt="eduLAB concept visualization — future DSP education workstation" src="/portfolio_eduLAB/assets/images/AI-mockup-eduLAB-final-vision-f28e34a6bce50f7b98728e2ecffe6d31.png" width="2816" height="1536" class="img_ev3q"></p>
-<p><em>Concept visualization — target long-term vision. Current version (v3.8) is a working breadboard prototype focused on fundamentals.</em></p>
-<hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="project-status--documentation">Project Status &amp; Documentation<a href="#project-status--documentation" class="hash-link" aria-label="Direct link to Project Status &amp; Documentation" title="Direct link to Project Status &amp; Documentation" translate="no">​</a></h2>
-<table><thead><tr><th>Version</th><th>Status</th><th>Notes</th></tr></thead><tbody><tr><td>v3.8</td><td>✅ Stable</td><td>Breadboard prototype</td></tr><tr><td>v4.0</td><td>🔄 In progress</td><td>Components ordered</td></tr><tr><td>v5.0+</td><td>📋 Planned</td><td>Full workstation</td></tr></tbody></table>
-<p><strong>Last updated:</strong> January 2026</p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="explore-further">Explore Further<a href="#explore-further" class="hash-link" aria-label="Direct link to Explore Further" title="Direct link to Explore Further" translate="no">​</a></h3>
-<ul>
-<li class=""><a class="" href="/portfolio_eduLAB/projects/edulab-synthesis-engine/hardware-design">Hardware Design</a> — Schematics, circuit analysis, power supply design</li>
-<li class=""><a class="" href="/portfolio_eduLAB/projects/edulab-synthesis-engine/software-architecture">Software Architecture</a> — Code structure, DSP algorithms, OOP refactor</li>
-<li class=""><a class="" href="/portfolio_eduLAB/projects/edulab-synthesis-engine/replication-status">Build Guide</a> — Replicate v3.8, component selection</li>
-</ul>
-<p>For debugging stories and design decisions, see the<br>
-<a class="" href="/portfolio_eduLAB/blog/tags/edulab-synthesis-engine">blog posts tagged edulab-synthesis-engine</a>.</p>
+<p>For detailed debugging stories and technical deep-dives, see the blog posts tagged <code>edulab-synthesis-engine</code>.</p>
 <hr>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="closing">Closing<a href="#closing" class="hash-link" aria-label="Direct link to Closing" title="Direct link to Closing" translate="no">​</a></h2>
 <blockquote>
 <p><em>From breadboard tinkerer to hardware designer.</em></p>
 </blockquote>
-<p>This project exists because I enjoy understanding how things work — deeply, physically, and honestly.<br>
-<!-- -->Everything else is secondary.</p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--next" href="/portfolio_eduLAB/projects/edulab-synthesis-engine/hardware-design"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Hardware Design</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#what-is-this" class="table-of-contents__link toc-highlight">What Is This?</a></li><li><a href="#why-i-built-this" class="table-of-contents__link toc-highlight">Why I Built This</a></li><li><a href="#the-philosophy-no-black-boxes" class="table-of-contents__link toc-highlight">The Philosophy: No Black Boxes</a></li><li><a href="#the-big-idea" class="table-of-contents__link toc-highlight">The Big Idea</a></li><li><a href="#the-dsp-education-sandbox" class="table-of-contents__link toc-highlight">The DSP Education Sandbox</a><ul><li><a href="#signal-flow-architecture" class="table-of-contents__link toc-highlight">Signal Flow Architecture</a></li></ul></li><li><a href="#vision-preview" class="table-of-contents__link toc-highlight">Vision Preview</a></li><li><a href="#current-state--v38-the-transistor-era" class="table-of-contents__link toc-highlight">Current State — v3.8: The Transistor Era</a><ul><li><a href="#hardware-overview" class="table-of-contents__link toc-highlight">Hardware Overview</a></li><li><a href="#software-architecture" class="table-of-contents__link toc-highlight">Software Architecture</a></li><li><a href="#engineering-lessons-learned" class="table-of-contents__link toc-highlight">Engineering Lessons Learned</a></li></ul></li><li><a href="#next-step--v40-the-hi-fi-leap" class="table-of-contents__link toc-highlight">Next Step — v4.0: The Hi-Fi Leap</a></li><li><a href="#the-grand-vision" class="table-of-contents__link toc-highlight">The Grand Vision</a></li><li><a href="#project-status--documentation" class="table-of-contents__link toc-highlight">Project Status &amp; Documentation</a><ul><li><a href="#explore-further" class="table-of-contents__link toc-highlight">Explore Further</a></li></ul></li><li><a href="#closing" class="table-of-contents__link toc-highlight">Closing</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Social</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/MatiDashkov07" target="_blank" rel="noopener noreferrer" class="footer__link-item footer-github-link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://www.linkedin.com/in/mati-dashkov-33740b375" target="_blank" rel="noopener noreferrer" class="footer__link-item footer-linkedin-link">LinkedIn<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="mailto:matidashkov5@gmail.com" target="_blank" rel="noopener noreferrer" class="footer__link-item footer-email-link">Email<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 eduLAB. Built with Docusaurus.</div></div></div></footer></div>
+<p>eduLAB exists because understanding is more satisfying than imitation.</p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--next" href="/portfolio_eduLAB/projects/edulab-synthesis-engine/hardware-design"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Hardware Design</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#what-is-this" class="table-of-contents__link toc-highlight">What Is This?</a></li><li><a href="#why-i-built-this" class="table-of-contents__link toc-highlight">Why I Built This</a></li><li><a href="#the-philosophy-no-black-boxes" class="table-of-contents__link toc-highlight">The Philosophy: No Black Boxes</a></li><li><a href="#the-big-idea" class="table-of-contents__link toc-highlight">The Big Idea</a></li><li><a href="#the-dsp-education-sandbox" class="table-of-contents__link toc-highlight">The DSP Education Sandbox</a><ul><li><a href="#hardware-core" class="table-of-contents__link toc-highlight">Hardware Core</a></li><li><a href="#software-architecture" class="table-of-contents__link toc-highlight">Software Architecture</a></li><li><a href="#what-v40-achieved" class="table-of-contents__link toc-highlight">What v4.0 Achieved</a></li></ul></li><li><a href="#project-status" class="table-of-contents__link toc-highlight">Project Status</a></li><li><a href="#explore-further" class="table-of-contents__link toc-highlight">Explore Further</a></li><li><a href="#closing" class="table-of-contents__link toc-highlight">Closing</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Social</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/MatiDashkov07" target="_blank" rel="noopener noreferrer" class="footer__link-item footer-github-link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://www.linkedin.com/in/mati-dashkov-33740b375" target="_blank" rel="noopener noreferrer" class="footer__link-item footer-linkedin-link">LinkedIn<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="mailto:matidashkov5@gmail.com" target="_blank" rel="noopener noreferrer" class="footer__link-item footer-email-link">Email<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 eduLAB. Built with Docusaurus.</div></div></div></footer></div>
 </body>
 </html>
